@@ -1,6 +1,6 @@
-import { ScrollView, StyleSheet, Text, View, StatusBar } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, StatusBar, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ChefHat, Menu } from 'lucide-react-native';
+import { ChefHat, Home, Plus, Star } from 'lucide-react-native';
 import { colors, fontType } from './assets/theme';
 import { useFonts } from 'expo-font';
 import CookingList from './src/components/CookingList.jsx';
@@ -21,15 +21,9 @@ export default function App() {
 
       {/* HEADER */}
       <View style={styles.header}>
-        <Menu size={26} color={colors.black} />
-        <Text style={styles.title}>My Cooking Hobby</Text>
         <ChefHat size={26} color={colors.primary} />
-      </View>
-
-      {/* GREETING */}
-      <View style={{ marginHorizontal: 20 }}>
-        <Text style={styles.greeting}>Halo Khilmi 👋</Text>
-        <Text style={styles.sub}>Mau masak apa hari ini?</Text>
+        <Text style={styles.title}>My Cooking Hobby</Text>
+        <View style={{ width: 26 }} />
       </View>
 
       {/* CATEGORY */}
@@ -63,6 +57,26 @@ export default function App() {
 
       {/* LIST MASAKAN */}
       <CookingList />
+
+      {/* BOTTOM BAR */}
+      <View style={styles.bottomBar}>
+
+        <TouchableOpacity style={styles.tabItem}>
+          <Home size={22} color={colors.primary} />
+          <Text style={[styles.tabText, { color: colors.primary }]}>Home</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.tabItem}>
+          <Plus size={22} color="#999" />
+          <Text style={styles.tabText}>Tambah Menu</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.tabItem}>
+          <Star size={22} color="#999" />
+          <Text style={styles.tabText}>Favorit</Text>
+        </TouchableOpacity>
+
+      </View>
 
     </SafeAreaView>
   );
@@ -121,5 +135,27 @@ const styles = StyleSheet.create({
     color: "gray",
     paddingBottom: 10,
   },
+
+  /*  BOTTOM BAR */
+  bottomBar: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    paddingVertical: 10,
+    borderTopWidth: 1,
+    borderColor: "#eee",
+    backgroundColor: "#fff"
+  },
+
+  tabItem: {
+    alignItems: "center"
+  },
+
+  tabText: {
+    fontSize: 12,
+    fontFamily: "Pjs-Regular",
+    color: "#999",
+    marginTop: 3
+  }
 
 });
