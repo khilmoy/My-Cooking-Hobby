@@ -8,17 +8,14 @@ import CookingList from './src/components/CookingList';
 
 export default function App() {
 
-  // state halaman
+  // state untuk halaman
   const [halaman, setHalaman] = useState("Home");
 
   // state kategori
   const [kategori, setKategori] = useState("Semua");
 
-  // state favorit
-  const [favorit, setFavorit] = useState([
-    "Nasi Goreng",
-    "Pizza"
-  ]);
+  // state data favorit
+  const [favorit, setFavorit] = useState([]);
 
   // load font
   const [loaded] = useFonts(fontType);
@@ -37,101 +34,65 @@ export default function App() {
         <View style={{ width: 26 }} />
       </View>
 
-      {/* kategori */}
+      {/* kategori hanya tampil di home */}
       {halaman === "Home" && (
         <View style={styles.listCategory}>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
 
-            <TouchableOpacity
-              style={kategori === "Semua" ? styles.catActive : styles.catItem}
-              onPress={() => setKategori("Semua")}
-            >
-              <Text style={kategori === "Semua" ? styles.catTextActive : styles.catText}>
-                Semua
-              </Text>
+            <TouchableOpacity onPress={() => setKategori("Semua")} style={kategori === "Semua" ? styles.catActive : styles.catItem}>
+              <Text style={kategori === "Semua" ? styles.catTextActive : styles.catText}>Semua</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
-              style={kategori === "Terbaru" ? styles.catActive : styles.catItem}
-              onPress={() => setKategori("Terbaru")}
-            >
-              <Text style={kategori === "Terbaru" ? styles.catTextActive : styles.catText}>
-                Terbaru
-              </Text>
+            <TouchableOpacity onPress={() => setKategori("Terbaru")} style={kategori === "Terbaru" ? styles.catActive : styles.catItem}>
+              <Text style={kategori === "Terbaru" ? styles.catTextActive : styles.catText}>Terbaru</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
-              style={kategori === "Mudah" ? styles.catActive : styles.catItem}
-              onPress={() => setKategori("Mudah")}
-            >
-              <Text style={kategori === "Mudah" ? styles.catTextActive : styles.catText}>
-                Mudah
-              </Text>
+            <TouchableOpacity onPress={() => setKategori("Mudah")} style={kategori === "Mudah" ? styles.catActive : styles.catItem}>
+              <Text style={kategori === "Mudah" ? styles.catTextActive : styles.catText}>Mudah</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
-              style={kategori === "Sedang" ? styles.catActive : styles.catItem}
-              onPress={() => setKategori("Sedang")}
-            >
-              <Text style={kategori === "Sedang" ? styles.catTextActive : styles.catText}>
-                Sedang
-              </Text>
+            <TouchableOpacity onPress={() => setKategori("Sedang")} style={kategori === "Sedang" ? styles.catActive : styles.catItem}>
+              <Text style={kategori === "Sedang" ? styles.catTextActive : styles.catText}>Sedang</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
-              style={kategori === "Sulit" ? styles.catActive : styles.catItem}
-              onPress={() => setKategori("Sulit")}
-            >
-              <Text style={kategori === "Sulit" ? styles.catTextActive : styles.catText}>
-                Sulit
-              </Text>
+            <TouchableOpacity onPress={() => setKategori("Sulit")} style={kategori === "Sulit" ? styles.catActive : styles.catItem}>
+              <Text style={kategori === "Sulit" ? styles.catTextActive : styles.catText}>Sulit</Text>
             </TouchableOpacity>
 
           </ScrollView>
         </View>
       )}
 
-      {/* list */}
+      {/* kirim props ke komponen */}
       <CookingList
-        kategori={halaman === "Home" ? kategori : "Favorit"}
+        kategori={
+          halaman === "Home"
+            ? kategori
+            : halaman === "Favorit"
+            ? "Favorit"
+            : "Kosong"
+        }
         favorit={favorit}
         setFavorit={setFavorit}
+        halaman={halaman}
       />
 
-      {/* bottom bar */}
+      {/* bottom navigation */}
       <View style={styles.bottomBar}>
 
-        {/* HOME */}
-        <TouchableOpacity
-          onPress={() => setHalaman("Home")}
-          style={halaman === "Home" ? styles.tabActive : styles.tabItem}
-        >
+        <TouchableOpacity onPress={() => setHalaman("Home")} style={halaman === "Home" ? styles.tabActive : styles.tabItem}>
           <Home size={20} color={halaman === "Home" ? "#fff" : "#999"} />
-          <Text style={halaman === "Home" ? styles.tabTextActive : styles.tabText}>
-            Home
-          </Text>
+          <Text style={halaman === "Home" ? styles.tabTextActive : styles.tabText}>Home</Text>
         </TouchableOpacity>
 
-        {/* TAMBAH */}
-        <TouchableOpacity
-          onPress={() => setHalaman("Tambah")}
-          style={halaman === "Tambah" ? styles.tabActive : styles.tabItem}
-        >
+        <TouchableOpacity onPress={() => setHalaman("Tambah")} style={halaman === "Tambah" ? styles.tabActive : styles.tabItem}>
           <Plus size={20} color={halaman === "Tambah" ? "#fff" : "#999"} />
-          <Text style={halaman === "Tambah" ? styles.tabTextActive : styles.tabText}>
-            Tambah
-          </Text>
+          <Text style={halaman === "Tambah" ? styles.tabTextActive : styles.tabText}>Tambah</Text>
         </TouchableOpacity>
 
-        {/* FAVORIT */}
-        <TouchableOpacity
-          onPress={() => setHalaman("Favorit")}
-          style={halaman === "Favorit" ? styles.tabActive : styles.tabItem}
-        >
+        <TouchableOpacity onPress={() => setHalaman("Favorit")} style={halaman === "Favorit" ? styles.tabActive : styles.tabItem}>
           <Star size={20} color={halaman === "Favorit" ? "#fff" : "#999"} />
-          <Text style={halaman === "Favorit" ? styles.tabTextActive : styles.tabText}>
-            Favorit
-          </Text>
+          <Text style={halaman === "Favorit" ? styles.tabTextActive : styles.tabText}>Favorit</Text>
         </TouchableOpacity>
 
       </View>
@@ -159,7 +120,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontFamily: "Pjs-Bold",
-    color: "#2d2d2d" 
+    color: "#2d2d2d"
   },
 
   listCategory: {
@@ -179,61 +140,51 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 25,
-    marginHorizontal: 6,
-    elevation: 3 
+    marginHorizontal: 6
   },
 
   catText: {
     color: "#bf360c",
-    fontFamily: "Pjs-SemiBold",
-    fontSize: 13
+    fontFamily: "Pjs-SemiBold"
   },
 
   catTextActive: {
     color: "#fff",
-    fontFamily: "Pjs-SemiBold",
-    fontSize: 13
+    fontFamily: "Pjs-SemiBold"
   },
 
-  /* ===== BOTTOM BAR ===== */
   bottomBar: {
     flexDirection: "row",
     justifyContent: "space-around",
     paddingVertical: 14,
     borderTopWidth: 1,
-    borderColor: "#f1f1f1",
-    backgroundColor: "#ffffff"
+    borderColor: "#eee",
+    backgroundColor: "#fff"
   },
 
   tabItem: {
     alignItems: "center",
-    paddingHorizontal: 18,
-    paddingVertical: 10,
-    borderRadius: 25,
-    backgroundColor: "#ffffff" 
+    padding: 10,
+    borderRadius: 20
   },
 
   tabActive: {
     alignItems: "center",
-    paddingHorizontal: 18,
-    paddingVertical: 10,
-    borderRadius: 25,
-    backgroundColor: "#ff7043",
-    elevation: 4
+    padding: 10,
+    borderRadius: 20,
+    backgroundColor: "#ff7043"
   },
 
   tabText: {
     fontSize: 12,
     fontFamily: "Pjs-Regular",
-    color: "#8a8a8a",
-    marginTop: 3
+    color: "#999"
   },
 
   tabTextActive: {
     fontSize: 12,
     fontFamily: "Pjs-Regular",
-    color: "#fff",
-    marginTop: 3
+    color: "#fff"
   }
 
 });
