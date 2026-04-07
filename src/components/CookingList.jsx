@@ -237,6 +237,7 @@ export default function CookingList({ kategori, favorit, setFavorit, setHalaman,
     );
 }
 
+// styling komponen
 const styles = StyleSheet.create({
     card: {
         marginBottom: 20,

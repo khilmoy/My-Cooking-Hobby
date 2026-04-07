@@ -4,9 +4,6 @@ import { ScrollView, StyleSheet, Text, View, StatusBar, TouchableOpacity } from 
 // Safe area biar tidak ketabrak notch / status bar
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-// icon (meskipun di sini belum dipakai)
-import { ChefHat } from 'lucide-react-native';
-
 // import warna & font custom
 import { colors, fontType } from '../../assets/theme';
 
@@ -23,8 +20,8 @@ export default function Home({
   setKategori, 
   favorit, 
   setFavorit,
-  setHalaman,            // ✅ TAMBAHAN
-  setDetailMakanan       // ✅ TAMBAHAN
+  setHalaman,            
+  setDetailMakanan       
 }) {
 
   // load font custom
@@ -102,8 +99,8 @@ export default function Home({
         kategori={kategori}
         favorit={favorit}
         setFavorit={setFavorit}
-        setHalaman={setHalaman}               // ✅ TAMBAHAN
-        setDetailMakanan={setDetailMakanan}   // ✅ TAMBAHAN
+        setHalaman={setHalaman}               
+        setDetailMakanan={setDetailMakanan}   
       />
 
     </SafeAreaView>
