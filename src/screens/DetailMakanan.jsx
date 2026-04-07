@@ -64,7 +64,7 @@ export default function DetailMakanan({ data, setHalaman, favorit = [], setFavor
             <TouchableOpacity style={styles.chip} onPress={toggleFavorit}>
               <Star size={14} color={isFavorit ? "#ffd700" : "#999"} />
               <Text style={styles.chipText}>
-                {isFavorit ? "Favorit" : "Simpan"}
+                {isFavorit ? "Favorit" : "Favorit"}
               </Text>
             </TouchableOpacity>
 

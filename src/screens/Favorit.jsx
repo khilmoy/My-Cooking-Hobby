@@ -26,10 +26,10 @@ export default function Favorit({ favorit, setFavorit }) {
   );
 }
 
-// styling
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    paddingTop: 20
   },
   emptyContainer: {
     flex: 1,
