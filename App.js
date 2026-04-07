@@ -11,10 +11,8 @@ import {
 
 import { useState, useEffect } from "react";
 import { useFonts } from "expo-font";
-
-// ✅ FIX PATH (INI YANG PENTING)
 import fontType from "./assets/theme/fonts";
-import { ChefHat, Home, Plus, Star } from "lucide-react-native";
+import { ChefHat, Home, Plus, Star, User } from "lucide-react-native";
 import { colors } from "./assets/theme";
 
 // import screen
@@ -22,6 +20,7 @@ import HomeScreen from "./src/screens/Home";
 import Favorit from "./src/screens/Favorit";
 import TambahMenu from "./src/screens/TambahMenu";
 import DetailMakanan from "./src/screens/DetailMakanan";
+import Profile from "./src/screens/Profile";
 
 export default function App() {
 
@@ -59,12 +58,21 @@ export default function App() {
       {/* STATUS BAR */}
       <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
 
-      {/* HEADER (HILANG DI DETAIL) */}
-      {halaman !== "Detail" && (
+      {/* HEADER (HILANG DI DETAIL & PROFILE) */}
+      {halaman !== "Detail" && halaman !== "Profile" && (
         <View style={styles.header}>
+
+          {/* kiri */}
           <ChefHat size={26} color={colors.primary} />
+
+          {/* tengah */}
           <Text style={styles.title}>My Cooking Hobby</Text>
-          <View style={{ width: 26 }} />
+
+          {/* kanan (PROFILE) */}
+          <TouchableOpacity onPress={() => setHalaman("Profile")}>
+            <User size={24} color="#333" />
+          </TouchableOpacity>
+
         </View>
       )}
 
@@ -102,10 +110,14 @@ export default function App() {
           />
         )}
 
+        {halaman === "Profile" && (
+          <Profile setHalaman={setHalaman} />
+        )}
+
       </View>
 
-      {/* NAVBAR */}
-      {!keyboardVisible && halaman !== "Detail" && (
+      {/* NAVBAR (HILANG DI DETAIL & PROFILE) */}
+      {!keyboardVisible && halaman !== "Detail" && halaman !== "Profile" && (
         <View style={styles.bottomBar}>
 
           <TouchableOpacity
