@@ -16,7 +16,7 @@ export default function Profile({ navigation }) {
                 {/* BACK BUTTON */}
                 <TouchableOpacity
                     style={styles.backBtn}
-                    onPress={() => navigation.goBack()} // 🔥 FIX
+                    onPress={() => navigation.goBack()} 
                 >
                     <ArrowLeft size={22} color="#000" />
                 </TouchableOpacity>
@@ -69,7 +69,7 @@ export default function Profile({ navigation }) {
     );
 }
 
-// 🔥 STYLE TIDAK DIUBAH
+//  STYLE 
 const styles = StyleSheet.create({
 
     container: {

@@ -18,7 +18,7 @@ export default function Favorit({ favorit, setFavorit, navigation }) {
             kategori="Favorit"
             favorit={favorit}
             setFavorit={setFavorit}
-            navigation={navigation} // 🔥 WAJIB DITAMBAH
+            navigation={navigation} 
           />
         </>
       )}

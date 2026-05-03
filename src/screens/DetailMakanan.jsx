@@ -41,7 +41,7 @@ export default function DetailMakanan({ navigation, favorit = [], setFavorit }) 
           {/* BACK BUTTON */}
           <TouchableOpacity
             style={styles.backBtn}
-            onPress={() => navigation.goBack()} // 🔥 FIX DI SINI
+            onPress={() => navigation.goBack()} 
           >
             <ArrowLeft size={22} color="#fff" />
           </TouchableOpacity>
@@ -97,7 +97,7 @@ export default function DetailMakanan({ navigation, favorit = [], setFavorit }) 
   );
 }
 
-// 🔥 STYLE TIDAK DIUBAH SAMA SEKALI
+//  STYLE 
 const styles = StyleSheet.create({
 
   container: {

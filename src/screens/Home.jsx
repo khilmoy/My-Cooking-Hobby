@@ -1,7 +1,7 @@
 // import komponen dasar dari React Native
 import { ScrollView, StyleSheet, Text, View, StatusBar, TouchableOpacity } from 'react-native';
 
-// Safe area biar tidak ketabrak notch / status bar
+// Safe area agar tidak ketabrak notch / status bar
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 // import warna & font custom

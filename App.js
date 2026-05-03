@@ -25,7 +25,7 @@ export default function App() {
   const [fontsLoaded] = useFonts(fontType);
   const [keyboardVisible, setKeyboardVisible] = useState(false);
 
-  // 🔥 TAMBAHAN: state untuk tab aktif
+  // state untuk tab aktif
   const [activeRoute, setActiveRoute] = useState("Home");
 
   useEffect(() => {
@@ -48,7 +48,6 @@ export default function App() {
   return (
     <NavigationContainer
       ref={navigationRef}
-      // 🔥 DETEKSI HALAMAN AKTIF
       onStateChange={() => {
         const route = navigationRef.getCurrentRoute();
         if (route?.name) {
@@ -60,7 +59,7 @@ export default function App() {
 
         <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
 
-        {/* HEADER (TETAP SAMA) */}
+        {/* HEADER */}
         <View style={styles.header}>
           <ChefHat size={26} color={colors.primary} />
           <Text style={styles.title}>My Cooking Hobby</Text>
@@ -121,7 +120,7 @@ export default function App() {
 }
 
 
-// STYLE TIDAK DIUBAH
+// STYLE 
 const styles = StyleSheet.create({
 
   header: {
