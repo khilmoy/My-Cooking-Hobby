@@ -25,7 +25,7 @@ export default function App() {
   const [fontsLoaded] = useFonts(fontType);
   const [keyboardVisible, setKeyboardVisible] = useState(false);
 
-  // state untuk tab aktif
+  // state untuk halaman aktif
   const [activeRoute, setActiveRoute] = useState("Home");
 
   useEffect(() => {
@@ -55,7 +55,10 @@ export default function App() {
         }
       }}
     >
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : "height"}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
 
         <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
 
@@ -75,7 +78,7 @@ export default function App() {
         </View>
 
         {/* NAVBAR */}
-        {!keyboardVisible && (
+        {!keyboardVisible && activeRoute !== "Profile" && (
           <View style={styles.bottomBar}>
 
             {/* HOME */}
@@ -120,7 +123,7 @@ export default function App() {
 }
 
 
-// STYLE 
+// STYLE (TIDAK DIUBAH)
 const styles = StyleSheet.create({
 
   header: {

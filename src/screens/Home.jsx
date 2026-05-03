@@ -1,40 +1,58 @@
-// import komponen dasar dari React Native
-import { ScrollView, StyleSheet, Text, View, StatusBar, TouchableOpacity } from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  StatusBar,
+  TouchableOpacity,
+  Animated
+} from 'react-native';
 
-// Safe area agar tidak ketabrak notch / status bar
 import { SafeAreaView } from 'react-native-safe-area-context';
-
-// import warna & font custom
 import { colors, fontType } from '../../assets/theme';
-
-// hook untuk load font
 import { useFonts } from 'expo-font';
-
-// komponen list masakan
+import { useRef } from 'react';
 import CookingList from '../components/CookingList';
 
+export default function Home({ navigation, kategori, setKategori, favorit, setFavorit }) {
 
-// komponen utama Home
-export default function Home({ 
-  navigation,
-  kategori, 
-  setKategori, 
-  favorit, 
-  setFavorit
-}) {
-
+  // load font custom dari assets
   const [loaded] = useFonts(fontType);
+
+  // Animated value untuk menangkap posisi scroll (Y)
+  const scrollY = useRef(new Animated.Value(0)).current;
+
+  // interpolasi untuk menggeser kategori ke atas saat scroll
+  // dari posisi 0 sampai -50
+  const translateY = scrollY.interpolate({
+    inputRange: [0, 100],
+    outputRange: [0, -50],
+    extrapolate: "clamp",
+  });
+
+  // jika font belum dimuat, tampilkan null (kosong)
   if (!loaded) return null;
 
   return (
     <SafeAreaView style={styles.container}>
-
       <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
 
-      {/* kategori */}
-      <View style={styles.listCategory}>
+      {/* KATEGORI*/}
+      <Animated.View
+        style={[
+          styles.listCategory,
+          {
+            transform: [{ translateY }], 
+            position: "absolute",       
+            top: 0,
+            left: 0,
+            right: 0,
+          }
+        ]}
+      >
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
 
+          {/* tombol kategori */}
           <TouchableOpacity
             onPress={() => setKategori("Semua")}
             style={kategori === "Semua" ? styles.catActive : styles.catItem}
@@ -81,33 +99,50 @@ export default function Home({
           </TouchableOpacity>
 
         </ScrollView>
-      </View>
+      </Animated.View>
 
-      {/* list masakan */}
-      <CookingList
-        kategori={kategori}
-        favorit={favorit}
-        setFavorit={setFavorit}
-        navigation={navigation} 
-      />
+      {/* SCROLL UTAMA*/}
+      <Animated.ScrollView
+        showsVerticalScrollIndicator={false}
+        scrollEventThrottle={16} 
+        contentContainerStyle={{ paddingTop: 70 }}
+
+        // menangkap event scroll dan update nilai scrollY
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: true }
+        )}
+      >
+        {/* list masakan */}
+        <CookingList
+          kategori={kategori}
+          favorit={favorit}
+          setFavorit={setFavorit}
+          navigation={navigation}
+        />
+      </Animated.ScrollView>
 
     </SafeAreaView>
   );
 }
 
-
-// STYLE 
 const styles = StyleSheet.create({
 
+  // container utama
   container: {
     flex: 1,
     backgroundColor: "#ffffff"
   },
 
+  // wrapper kategori
   listCategory: {
-    paddingVertical: 10
+    paddingVertical: 10,
+    backgroundColor: "#fff",
+    zIndex: 999,
+    elevation: 5
   },
 
+  // kategori normal
   catItem: {
     backgroundColor: "#ffe0b2",
     paddingHorizontal: 16,
@@ -116,6 +151,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 6
   },
 
+  // kategori aktif
   catActive: {
     backgroundColor: "#ff7043",
     paddingHorizontal: 16,
@@ -124,11 +160,13 @@ const styles = StyleSheet.create({
     marginHorizontal: 6
   },
 
+  // teks kategori biasa
   catText: {
     color: "#bf360c",
     fontFamily: "Pjs-SemiBold"
   },
 
+  // teks kategori aktif
   catTextActive: {
     color: "#fff",
     fontFamily: "Pjs-SemiBold"

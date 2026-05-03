@@ -15,44 +15,61 @@ export default function Router({ setKeyboardVisible }) {
     const [favorit, setFavorit] = useState([]);
 
     return (
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
+       <Stack.Navigator
+  screenOptions={{
+    headerShown: false,
+    animationEnabled: true,
+    cardStyleInterpolator: ({ current }) => ({
+      cardStyle: {
+        opacity: current.progress,
+      },
+    }),
+  }}
+>
 
-            <Stack.Screen name="Home">
-                {(props) => (
-                    <Home
-                        {...props}
-                        kategori={kategori}
-                        setKategori={setKategori}
-                        favorit={favorit}
-                        setFavorit={setFavorit}
-                    />
-                )}
-            </Stack.Screen>
+  <Stack.Screen name="Home">
+    {(props) => (
+      <Home
+        {...props}
+        kategori={kategori}
+        setKategori={setKategori}
+        favorit={favorit}
+        setFavorit={setFavorit}
+      />
+    )}
+  </Stack.Screen>
 
-            <Stack.Screen name="Detail">
-                {(props) => (
-                    <DetailMakanan
-                        {...props}
-                        favorit={favorit}
-                        setFavorit={setFavorit}
-                    />
-                )}
-            </Stack.Screen>
+  <Stack.Screen name="Detail">
+    {(props) => (
+      <DetailMakanan
+        {...props}
+        favorit={favorit}
+        setFavorit={setFavorit}
+      />
+    )}
+  </Stack.Screen>
 
-            <Stack.Screen name="Favorit">
-                {(props) => (
-                    <Favorit {...props} favorit={favorit} setFavorit={setFavorit} />
-                )}
-            </Stack.Screen>
+  <Stack.Screen name="Favorit">
+    {(props) => (
+      <Favorit
+        {...props}
+        favorit={favorit}
+        setFavorit={setFavorit}
+      />
+    )}
+  </Stack.Screen>
 
-            <Stack.Screen name="Tambah">
-                {(props) => (
-                    <TambahMenu {...props} setKeyboardVisible={setKeyboardVisible} />
-                )}
-            </Stack.Screen>
+  <Stack.Screen name="Tambah">
+    {(props) => (
+      <TambahMenu
+        {...props}
+        setKeyboardVisible={setKeyboardVisible}
+      />
+    )}
+  </Stack.Screen>
 
-            <Stack.Screen name="Profile" component={Profile} />
+  <Stack.Screen name="Profile" component={Profile} />
 
-        </Stack.Navigator>
+</Stack.Navigator>
     );
 }

@@ -3,16 +3,16 @@ import {
   Text,
   StyleSheet,
   ImageBackground,
-  ScrollView,
-  TouchableOpacity
+  TouchableOpacity,
+  Animated
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Calendar, Flame, Star, ArrowLeft, Pencil } from "lucide-react-native";
 import { useRoute } from "@react-navigation/native";
+import { useRef } from "react";
 
 export default function DetailMakanan({ navigation, favorit = [], setFavorit }) {
 
-  // ambil data dari navigation
   const route = useRoute();
   const { data } = route.params || {};
 
@@ -28,35 +28,54 @@ export default function DetailMakanan({ navigation, favorit = [], setFavorit }) 
     }
   };
 
+  // ANIMASI SCROLL
+  const scrollY = useRef(new Animated.Value(0)).current;
+
+  const diffClampY = Animated.diffClamp(scrollY, 0, 100);
+
+  const headerY = diffClampY.interpolate({
+    inputRange: [0, 100],
+    outputRange: [0, -100],
+  });
+
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+
+      <Animated.ScrollView
+        showsVerticalScrollIndicator={false}
+        scrollEventThrottle={16}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: true }
+        )}
+      >
 
         {/* HERO IMAGE */}
-        <ImageBackground source={{ uri: gambar }} style={styles.image}>
+        <Animated.View style={{ transform: [{ translateY: headerY }] }}>
 
-          {/* gradient */}
-          <View style={styles.gradient} />
+          <ImageBackground source={{ uri: gambar }} style={styles.image}>
 
-          {/* BACK BUTTON */}
-          <TouchableOpacity
-            style={styles.backBtn}
-            onPress={() => navigation.goBack()} 
-          >
-            <ArrowLeft size={22} color="#fff" />
-          </TouchableOpacity>
+            <View style={styles.gradient} />
 
-          {/* title */}
-          <View style={styles.titleWrap}>
-            <Text style={styles.title}>{nama}</Text>
-          </View>
+            <TouchableOpacity
+              style={styles.backBtn}
+              onPress={() => navigation.goBack()}
+            >
+              <ArrowLeft size={22} color="#fff" />
+            </TouchableOpacity>
 
-        </ImageBackground>
+            <View style={styles.titleWrap}>
+              <Text style={styles.title}>{nama}</Text>
+            </View>
+
+          </ImageBackground>
+
+        </Animated.View>
 
         {/* CONTENT */}
         <View style={styles.content}>
 
-          {/* INFO CHIPS */}
+          {/* INFO */}
           <View style={styles.chipsRow}>
 
             <View style={styles.chip}>
@@ -71,20 +90,24 @@ export default function DetailMakanan({ navigation, favorit = [], setFavorit }) 
 
             <TouchableOpacity style={styles.chip} onPress={toggleFavorit}>
               <Star size={14} color={isFavorit ? "#ffd700" : "#999"} />
-              <Text style={styles.chipText}>
-                {isFavorit ? "Favorit" : "Favorit"}
-              </Text>
+              <Text style={styles.chipText}>Favorit</Text>
             </TouchableOpacity>
 
           </View>
 
-          {/* RESEP */}
+          {/* RESEP  */}
           <View style={styles.recipeCard}>
             <Text style={styles.section}>Resep Masakan</Text>
-            <Text style={styles.resep}>{resep}</Text>
+
+            {resep?.split("\n").map((item, index) => (
+              <Text key={index} style={styles.resepItem}>
+                {item}
+              </Text>
+            ))}
+
           </View>
 
-          {/* BUTTON EDIT */}
+          {/* BUTTON */}
           <TouchableOpacity style={styles.editBtn}>
             <Pencil size={18} color="#fff" />
             <Text style={styles.editText}>Edit Resep</Text>
@@ -92,12 +115,14 @@ export default function DetailMakanan({ navigation, favorit = [], setFavorit }) 
 
         </View>
 
-      </ScrollView>
+      </Animated.ScrollView>
+
     </SafeAreaView>
   );
 }
 
-//  STYLE 
+
+// STYLE
 const styles = StyleSheet.create({
 
   container: {
@@ -174,10 +199,12 @@ const styles = StyleSheet.create({
     marginBottom: 10
   },
 
-  resep: {
-    lineHeight: 24,
+  resepItem: {
+    fontSize: 14,
+    lineHeight: 22,
     color: "#444",
-    fontFamily: "Pjs-Regular"
+    fontFamily: "Pjs-Regular",
+    marginBottom: 6
   },
 
   editBtn: {
