@@ -16,45 +16,31 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import * as ImagePicker from "expo-image-picker";
 import { ImagePlus, Calendar } from "lucide-react-native";
 
-export default function TambahMenu({ setKeyboardVisible }) {
+// tambah navigation
+export default function TambahMenu({ navigation, setKeyboardVisible }) {
 
-    // state input nama makanan
     const [nama, setNama] = useState("");
-
-    // state input resep
     const [resep, setResep] = useState("");
-
-    // state tanggal
     const [tanggal, setTanggal] = useState(new Date());
     const [showPicker, setShowPicker] = useState(false);
-
-    // state tingkat kesulitan
     const [level, setLevel] = useState("");
-
-    // state gambar dari galeri
     const [gambar, setGambar] = useState(null);
 
-    // fungsi untuk memilih gambar dari galeri
     const pilihGambar = async () => {
-        // menutup keyboard agar tidak terjadi glitch
         Keyboard.dismiss();
 
-        // delay agar keyboard benar-benar hilang sebelum buka galeri
         setTimeout(async () => {
             const result = await ImagePicker.launchImageLibraryAsync({
-                // menggunakan API baru (tidak deprecated)
                 mediaTypes: ImagePicker.MediaType.Images,
                 quality: 1
             });
 
-            // jika user memilih gambar
             if (!result.canceled) {
                 setGambar(result.assets[0].uri);
             }
         }, 200);
     };
 
-    // fungsi saat tanggal dipilih
     const onChangeTanggal = (event, selectedDate) => {
         setShowPicker(false);
         if (selectedDate) {
@@ -63,29 +49,24 @@ export default function TambahMenu({ setKeyboardVisible }) {
     };
 
     return (
-        // menghindari layout tertutup keyboard
         <KeyboardAvoidingView
             style={{ flex: 1 }}
             behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
 
-            {/* scroll agar tetap bisa digeser saat keyboard muncul */}
             <ScrollView contentContainerStyle={styles.container}>
 
-                {/* judul halaman */}
                 <Text style={styles.title}>Tambah Menu</Text>
 
-                {/* input nama */}
                 <TextInput
                     placeholder="Nama makanan"
                     value={nama}
                     onChangeText={setNama}
                     style={styles.input}
-                    // saat focus, sembunyikan navbar
                     onFocus={() => setKeyboardVisible(true)}
+                    onBlur={() => setKeyboardVisible(false)} 
                 />
 
-                {/* input Resep */}
                 <TextInput
                     placeholder="Tulis resep di sini..."
                     value={resep}
@@ -93,11 +74,11 @@ export default function TambahMenu({ setKeyboardVisible }) {
                     style={styles.textArea}
                     multiline
                     numberOfLines={5}
-                    textAlignVertical="top" 
+                    textAlignVertical="top"
                     onFocus={() => setKeyboardVisible(true)}
+                    onBlur={() => setKeyboardVisible(false)} 
                 />
 
-                {/* tombol pilih gambar */}
                 <TouchableOpacity style={styles.imagePicker} onPress={pilihGambar}>
                     <ImagePlus size={40} color="#999" />
                     <Text style={styles.imageText}>
@@ -105,12 +86,10 @@ export default function TambahMenu({ setKeyboardVisible }) {
                     </Text>
                 </TouchableOpacity>
 
-                {/* preview gambar */}
                 {gambar && (
                     <Image source={{ uri: gambar }} style={styles.image} />
                 )}
 
-                {/* input tanggal dengan icon */}
                 <TouchableOpacity
                     onPress={() => setShowPicker(true)}
                     style={styles.dateInput}
@@ -125,7 +104,6 @@ export default function TambahMenu({ setKeyboardVisible }) {
                     </Text>
                 </TouchableOpacity>
 
-                {/* date picker */}
                 {showPicker && (
                     <DateTimePicker
                         value={tanggal}
@@ -135,10 +113,8 @@ export default function TambahMenu({ setKeyboardVisible }) {
                     />
                 )}
 
-                {/* label */}
                 <Text style={styles.label}>Tingkat Kesulitan</Text>
 
-                {/* pilihan level */}
                 <View style={styles.levelContainer}>
                     {["Mudah", "Sedang", "Sulit"].map((item) => (
                         <TouchableOpacity
@@ -158,8 +134,14 @@ export default function TambahMenu({ setKeyboardVisible }) {
                     ))}
                 </View>
 
-                {/* tombol simpan */}
-                <TouchableOpacity style={styles.button}>
+                {/* BUTTON */}
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={() => {
+                        setKeyboardVisible(false); 
+                        navigation.goBack(); 
+                    }}
+                >
                     <Text style={styles.buttonText}>Simpan</Text>
                 </TouchableOpacity>
 
@@ -168,11 +150,13 @@ export default function TambahMenu({ setKeyboardVisible }) {
     );
 }
 
-// styling
+
+//STYLE 
 const styles = StyleSheet.create({
     container: {
         padding: 20,
-        paddingBottom: 40
+        paddingBottom: 40,
+        backgroundColor: "#fff"
     },
 
     title: {

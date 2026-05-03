@@ -16,32 +16,25 @@ import CookingList from '../components/CookingList';
 
 // komponen utama Home
 export default function Home({ 
+  navigation,
   kategori, 
   setKategori, 
   favorit, 
-  setFavorit,
-  setHalaman,            
-  setDetailMakanan       
+  setFavorit
 }) {
 
-  // load font custom
   const [loaded] = useFonts(fontType);
-
-  // jika font belum siap, tidak render apa-apa
   if (!loaded) return null;
 
   return (
-    // Safe area supaya UI aman di semua device
     <SafeAreaView style={styles.container}>
 
-      {/* mengatur warna status bar */}
       <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
 
-      {/* bagian kategori */}
+      {/* kategori */}
       <View style={styles.listCategory}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
 
-          {/* tombol kategori SEMUA */}
           <TouchableOpacity
             onPress={() => setKategori("Semua")}
             style={kategori === "Semua" ? styles.catActive : styles.catItem}
@@ -51,7 +44,6 @@ export default function Home({
             </Text>
           </TouchableOpacity>
 
-          {/* kategori TERBARU */}
           <TouchableOpacity
             onPress={() => setKategori("Terbaru")}
             style={kategori === "Terbaru" ? styles.catActive : styles.catItem}
@@ -61,7 +53,6 @@ export default function Home({
             </Text>
           </TouchableOpacity>
 
-          {/* kategori MUDAH */}
           <TouchableOpacity
             onPress={() => setKategori("Mudah")}
             style={kategori === "Mudah" ? styles.catActive : styles.catItem}
@@ -71,7 +62,6 @@ export default function Home({
             </Text>
           </TouchableOpacity>
 
-          {/* kategori SEDANG */}
           <TouchableOpacity
             onPress={() => setKategori("Sedang")}
             style={kategori === "Sedang" ? styles.catActive : styles.catItem}
@@ -81,7 +71,6 @@ export default function Home({
             </Text>
           </TouchableOpacity>
 
-          {/* kategori SULIT */}
           <TouchableOpacity
             onPress={() => setKategori("Sulit")}
             style={kategori === "Sulit" ? styles.catActive : styles.catItem}
@@ -94,13 +83,12 @@ export default function Home({
         </ScrollView>
       </View>
 
-      {/* menampilkan list masakan sesuai kategori */}
+      {/* list masakan */}
       <CookingList
         kategori={kategori}
         favorit={favorit}
         setFavorit={setFavorit}
-        setHalaman={setHalaman}               
-        setDetailMakanan={setDetailMakanan}   
+        navigation={navigation} 
       />
 
     </SafeAreaView>
@@ -108,21 +96,18 @@ export default function Home({
 }
 
 
-// styling komponen
+// STYLE 
 const styles = StyleSheet.create({
 
-  // container utama
   container: {
     flex: 1,
     backgroundColor: "#ffffff"
   },
 
-  // container kategori
   listCategory: {
     paddingVertical: 10
   },
 
-  // style kategori biasa
   catItem: {
     backgroundColor: "#ffe0b2",
     paddingHorizontal: 16,
@@ -131,7 +116,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 6
   },
 
-  // style kategori aktif
   catActive: {
     backgroundColor: "#ff7043",
     paddingHorizontal: 16,
@@ -140,13 +124,11 @@ const styles = StyleSheet.create({
     marginHorizontal: 6
   },
 
-  // text kategori biasa
   catText: {
     color: "#bf360c",
     fontFamily: "Pjs-SemiBold"
   },
 
-  // text kategori aktif
   catTextActive: {
     color: "#fff",
     fontFamily: "Pjs-SemiBold"

@@ -2,7 +2,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { View, Text, StyleSheet } from 'react-native';
 import CookingList from '../components/CookingList';
 
-export default function Favorit({ favorit, setFavorit }) {
+export default function Favorit({ favorit, setFavorit, navigation }) {
   return (
     <SafeAreaView style={styles.container}>
 
@@ -18,6 +18,7 @@ export default function Favorit({ favorit, setFavorit }) {
             kategori="Favorit"
             favorit={favorit}
             setFavorit={setFavorit}
+            navigation={navigation} // 🔥 WAJIB DITAMBAH
           />
         </>
       )}
@@ -29,7 +30,8 @@ export default function Favorit({ favorit, setFavorit }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 20
+    paddingTop: 20,
+    backgroundColor: "#fff"
   },
   emptyContainer: {
     flex: 1,

@@ -2,10 +2,9 @@
 import { ScrollView, View, Text, StyleSheet, ImageBackground, TouchableOpacity } from "react-native";
 import { Calendar, Flame, Star } from "lucide-react-native";
 
-// komponen menerima props
-export default function CookingList({ kategori, favorit, setFavorit, setHalaman, setDetailMakanan }) {
+// 🔥 pakai navigation (bukan setHalaman lagi)
+export default function CookingList({ kategori, favorit, setFavorit, navigation }) {
 
-    // fungsi toggle favorit
     const toggleFavorit = (nama) => {
         if (favorit.includes(nama)) {
             setFavorit(favorit.filter(item => item !== nama));
@@ -14,10 +13,9 @@ export default function CookingList({ kategori, favorit, setFavorit, setHalaman,
         }
     };
 
-    // fungsi ke detail
+    // 🔥 FIX: pakai navigate
     const bukaDetail = (data) => {
-        setDetailMakanan(data);
-        setHalaman("Detail");
+        navigation.navigate("Detail", { data });
     };
 
     return (
@@ -237,7 +235,7 @@ export default function CookingList({ kategori, favorit, setFavorit, setHalaman,
     );
 }
 
-// styling komponen
+// STYLE TIDAK DIUBAH
 const styles = StyleSheet.create({
     card: {
         marginBottom: 20,

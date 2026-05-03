@@ -8,7 +8,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { User, Mail, LogOut, Pencil, Phone, ArrowLeft } from "lucide-react-native";
 
-export default function Profile({ setHalaman }) {
+export default function Profile({ navigation }) {
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView showsVerticalScrollIndicator={false}>
@@ -16,7 +16,7 @@ export default function Profile({ setHalaman }) {
                 {/* BACK BUTTON */}
                 <TouchableOpacity
                     style={styles.backBtn}
-                    onPress={() => setHalaman("Home")}
+                    onPress={() => navigation.goBack()} // 🔥 FIX
                 >
                     <ArrowLeft size={22} color="#000" />
                 </TouchableOpacity>
@@ -24,7 +24,6 @@ export default function Profile({ setHalaman }) {
                 {/* PROFILE HEADER */}
                 <View style={styles.profileHeader}>
 
-                    {/* AVATAR ICON */}
                     <View style={styles.avatar}>
                         <User size={50} color="#000000" />
                     </View>
@@ -70,6 +69,7 @@ export default function Profile({ setHalaman }) {
     );
 }
 
+// 🔥 STYLE TIDAK DIUBAH
 const styles = StyleSheet.create({
 
     container: {
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
         width: 110,
         height: 110,
         borderRadius: 55,
-        backgroundColor: "#e8e6e5",
+        backgroundColor: "#e8e5e5",
         justifyContent: "center",
         alignItems: "center",
         marginBottom: 10,

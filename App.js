@@ -15,22 +15,18 @@ import fontType from "./assets/theme/fonts";
 import { ChefHat, Home, Plus, Star, User } from "lucide-react-native";
 import { colors } from "./assets/theme";
 
-// import screen
-import HomeScreen from "./src/screens/Home";
-import Favorit from "./src/screens/Favorit";
-import TambahMenu from "./src/screens/TambahMenu";
-import DetailMakanan from "./src/screens/DetailMakanan";
-import Profile from "./src/screens/Profile";
+import { NavigationContainer, createNavigationContainerRef } from "@react-navigation/native";
+import Router from "./src/navigation/Router";
+
+export const navigationRef = createNavigationContainerRef();
 
 export default function App() {
 
   const [fontsLoaded] = useFonts(fontType);
-
-  const [halaman, setHalaman] = useState("Home");
-  const [kategori, setKategori] = useState("Semua");
-  const [favorit, setFavorit] = useState([]);
-  const [detailMakanan, setDetailMakanan] = useState(null);
   const [keyboardVisible, setKeyboardVisible] = useState(false);
+
+  // 🔥 TAMBAHAN: state untuk tab aktif
+  const [activeRoute, setActiveRoute] = useState("Home");
 
   useEffect(() => {
     const show = Keyboard.addListener("keyboardDidShow", () => {
@@ -50,114 +46,82 @@ export default function App() {
   if (!fontsLoaded) return null;
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    <NavigationContainer
+      ref={navigationRef}
+      // 🔥 DETEKSI HALAMAN AKTIF
+      onStateChange={() => {
+        const route = navigationRef.getCurrentRoute();
+        if (route?.name) {
+          setActiveRoute(route.name);
+        }
+      }}
     >
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : "height"}>
 
-      {/* STATUS BAR */}
-      <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
+        <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
 
-      {/* HEADER (HILANG DI DETAIL & PROFILE) */}
-      {halaman !== "Detail" && halaman !== "Profile" && (
+        {/* HEADER (TETAP SAMA) */}
         <View style={styles.header}>
-
-          {/* kiri */}
           <ChefHat size={26} color={colors.primary} />
-
-          {/* tengah */}
           <Text style={styles.title}>My Cooking Hobby</Text>
 
-          {/* kanan (PROFILE) */}
-          <TouchableOpacity onPress={() => setHalaman("Profile")}>
+          <TouchableOpacity onPress={() => navigationRef.navigate("Profile")}>
             <User size={24} color="#333" />
           </TouchableOpacity>
-
         </View>
-      )}
 
-      {/* SCREEN */}
-      <View style={{ flex: 1 }}>
-
-        {halaman === "Home" && (
-          <HomeScreen
-            kategori={kategori}
-            setKategori={setKategori}
-            favorit={favorit}
-            setFavorit={setFavorit}
-            setHalaman={setHalaman}
-            setDetailMakanan={setDetailMakanan}
-          />
-        )}
-
-        {halaman === "Favorit" && (
-          <Favorit
-            favorit={favorit}
-            setFavorit={setFavorit}
-          />
-        )}
-
-        {halaman === "Tambah" && (
-          <TambahMenu setKeyboardVisible={setKeyboardVisible} />
-        )}
-
-        {halaman === "Detail" && (
-          <DetailMakanan
-            data={detailMakanan}
-            setHalaman={setHalaman}
-            favorit={favorit}
-            setFavorit={setFavorit}
-          />
-        )}
-
-        {halaman === "Profile" && (
-          <Profile setHalaman={setHalaman} />
-        )}
-
-      </View>
-
-      {/* NAVBAR (HILANG DI DETAIL & PROFILE) */}
-      {!keyboardVisible && halaman !== "Detail" && halaman !== "Profile" && (
-        <View style={styles.bottomBar}>
-
-          <TouchableOpacity
-            onPress={() => setHalaman("Home")}
-            style={halaman === "Home" ? styles.tabActive : styles.tabItem}
-          >
-            <Home size={20} color={halaman === "Home" ? "#fff" : "#999"} />
-            <Text style={halaman === "Home" ? styles.tabTextActive : styles.tabText}>
-              Home
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() => setHalaman("Tambah")}
-            style={halaman === "Tambah" ? styles.tabActive : styles.tabItem}
-          >
-            <Plus size={20} color={halaman === "Tambah" ? "#fff" : "#999"} />
-            <Text style={halaman === "Tambah" ? styles.tabTextActive : styles.tabText}>
-              Tambah
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() => setHalaman("Favorit")}
-            style={halaman === "Favorit" ? styles.tabActive : styles.tabItem}
-          >
-            <Star size={20} color={halaman === "Favorit" ? "#fff" : "#999"} />
-            <Text style={halaman === "Favorit" ? styles.tabTextActive : styles.tabText}>
-              Favorit
-            </Text>
-          </TouchableOpacity>
-
+        {/* STACK */}
+        <View style={{ flex: 1 }}>
+          <Router setKeyboardVisible={setKeyboardVisible} />
         </View>
-      )}
 
-    </KeyboardAvoidingView>
+        {/* NAVBAR */}
+        {!keyboardVisible && (
+          <View style={styles.bottomBar}>
+
+            {/* HOME */}
+            <TouchableOpacity
+              onPress={() => navigationRef.navigate("Home")}
+              style={activeRoute === "Home" ? styles.tabActive : styles.tabItem}
+            >
+              <Home size={20} color={activeRoute === "Home" ? "#fff" : "#999"} />
+              <Text style={activeRoute === "Home" ? styles.tabTextActive : styles.tabText}>
+                Home
+              </Text>
+            </TouchableOpacity>
+
+            {/* TAMBAH */}
+            <TouchableOpacity
+              onPress={() => navigationRef.navigate("Tambah")}
+              style={activeRoute === "Tambah" ? styles.tabActive : styles.tabItem}
+            >
+              <Plus size={20} color={activeRoute === "Tambah" ? "#fff" : "#999"} />
+              <Text style={activeRoute === "Tambah" ? styles.tabTextActive : styles.tabText}>
+                Tambah
+              </Text>
+            </TouchableOpacity>
+
+            {/* FAVORIT */}
+            <TouchableOpacity
+              onPress={() => navigationRef.navigate("Favorit")}
+              style={activeRoute === "Favorit" ? styles.tabActive : styles.tabItem}
+            >
+              <Star size={20} color={activeRoute === "Favorit" ? "#fff" : "#999"} />
+              <Text style={activeRoute === "Favorit" ? styles.tabTextActive : styles.tabText}>
+                Favorit
+              </Text>
+            </TouchableOpacity>
+
+          </View>
+        )}
+
+      </KeyboardAvoidingView>
+    </NavigationContainer>
   );
 }
 
-// STYLE
+
+// STYLE TIDAK DIUBAH
 const styles = StyleSheet.create({
 
   header: {

@@ -8,8 +8,13 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Calendar, Flame, Star, ArrowLeft, Pencil } from "lucide-react-native";
+import { useRoute } from "@react-navigation/native";
 
-export default function DetailMakanan({ data, setHalaman, favorit = [], setFavorit }) {
+export default function DetailMakanan({ navigation, favorit = [], setFavorit }) {
+
+  // ambil data dari navigation
+  const route = useRoute();
+  const { data } = route.params || {};
 
   const { nama, gambar, tanggal, level, resep } = data || {};
 
@@ -33,8 +38,11 @@ export default function DetailMakanan({ data, setHalaman, favorit = [], setFavor
           {/* gradient */}
           <View style={styles.gradient} />
 
-          {/* BACK BUTTON  */}
-          <TouchableOpacity style={styles.backBtn} onPress={() => setHalaman("Home")}>
+          {/* BACK BUTTON */}
+          <TouchableOpacity
+            style={styles.backBtn}
+            onPress={() => navigation.goBack()} // 🔥 FIX DI SINI
+          >
             <ArrowLeft size={22} color="#fff" />
           </TouchableOpacity>
 
@@ -89,7 +97,7 @@ export default function DetailMakanan({ data, setHalaman, favorit = [], setFavor
   );
 }
 
-// styling
+// 🔥 STYLE TIDAK DIUBAH SAMA SEKALI
 const styles = StyleSheet.create({
 
   container: {
@@ -107,10 +115,9 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.3)"
   },
 
- 
   backBtn: {
     position: "absolute",
-    top: 20, 
+    top: 20,
     left: 20,
     backgroundColor: "rgba(0,0,0,0.3)",
     padding: 10,
@@ -173,7 +180,6 @@ const styles = StyleSheet.create({
     fontFamily: "Pjs-Regular"
   },
 
-  
   editBtn: {
     flexDirection: "row",
     justifyContent: "center",
