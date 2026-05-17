@@ -23,19 +23,11 @@ export const navigationRef = createNavigationContainerRef();
 export default function App() {
 
   const [fontsLoaded] = useFonts(fontType);
-  const [keyboardVisible, setKeyboardVisible] = useState(false);
-
-  // state untuk halaman aktif
-  const [activeRoute, setActiveRoute] = useState("Home");
+  const [activeRoute, setActiveRoute] = useState("SplashScreen");
 
   useEffect(() => {
-    const show = Keyboard.addListener("keyboardDidShow", () => {
-      setKeyboardVisible(true);
-    });
-
-    const hide = Keyboard.addListener("keyboardDidHide", () => {
-      setKeyboardVisible(false);
-    });
+    const show = Keyboard.addListener("keyboardDidShow", () => {});
+    const hide = Keyboard.addListener("keyboardDidHide", () => {});
 
     return () => {
       show.remove();
@@ -44,6 +36,10 @@ export default function App() {
   }, []);
 
   if (!fontsLoaded) return null;
+
+  // 🔥 ROUTE YANG DISembunyikan
+  const hideHeader = ["SplashScreen", "Login", "Register"];
+  const hideNavbar = ["SplashScreen", "Login", "Register", "Profile", "EditProfile"];
 
   return (
     <NavigationContainer
@@ -62,26 +58,27 @@ export default function App() {
 
         <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
 
-        {/* HEADER */}
-        <View style={styles.header}>
-          <ChefHat size={26} color={colors.primary} />
-          <Text style={styles.title}>My Cooking Hobby</Text>
+        {/* 🔥 HEADER */}
+        {!hideHeader.includes(activeRoute) && (
+          <View style={styles.header}>
+            <ChefHat size={26} color={colors.primary} />
+            <Text style={styles.title}>My Cooking Hobby</Text>
 
-          <TouchableOpacity onPress={() => navigationRef.navigate("Profile")}>
-            <User size={24} color="#333" />
-          </TouchableOpacity>
-        </View>
+            <TouchableOpacity onPress={() => navigationRef.navigate("Profile")}>
+              <User size={24} color="#333" />
+            </TouchableOpacity>
+          </View>
+        )}
 
         {/* STACK */}
         <View style={{ flex: 1 }}>
-          <Router setKeyboardVisible={setKeyboardVisible} />
+          <Router />
         </View>
 
-        {/* NAVBAR */}
-        {!keyboardVisible && activeRoute !== "Profile" && (
+        {/* 🔥 NAVBAR */}
+        {!hideNavbar.includes(activeRoute) && (
           <View style={styles.bottomBar}>
 
-            {/* HOME */}
             <TouchableOpacity
               onPress={() => navigationRef.navigate("Home")}
               style={activeRoute === "Home" ? styles.tabActive : styles.tabItem}
@@ -92,7 +89,6 @@ export default function App() {
               </Text>
             </TouchableOpacity>
 
-            {/* TAMBAH */}
             <TouchableOpacity
               onPress={() => navigationRef.navigate("Tambah")}
               style={activeRoute === "Tambah" ? styles.tabActive : styles.tabItem}
@@ -103,7 +99,6 @@ export default function App() {
               </Text>
             </TouchableOpacity>
 
-            {/* FAVORIT */}
             <TouchableOpacity
               onPress={() => navigationRef.navigate("Favorit")}
               style={activeRoute === "Favorit" ? styles.tabActive : styles.tabItem}
@@ -123,7 +118,7 @@ export default function App() {
 }
 
 
-// STYLE (TIDAK DIUBAH)
+// STYLE
 const styles = StyleSheet.create({
 
   header: {

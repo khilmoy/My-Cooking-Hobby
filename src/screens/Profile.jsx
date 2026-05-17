@@ -16,7 +16,7 @@ export default function Profile({ navigation }) {
                 {/* BACK BUTTON */}
                 <TouchableOpacity
                     style={styles.backBtn}
-                    onPress={() => navigation.goBack()} 
+                    onPress={() => navigation.goBack()}
                 >
                     <ArrowLeft size={22} color="#000" />
                 </TouchableOpacity>
@@ -53,7 +53,10 @@ export default function Profile({ navigation }) {
                 </View>
 
                 {/* EDIT BUTTON */}
-                <TouchableOpacity style={styles.editBtn}>
+                <TouchableOpacity
+                    style={styles.editBtn}
+                    onPress={() => navigation.navigate("EditProfile")}
+                >
                     <Pencil size={18} color="#fff" />
                     <Text style={styles.editText}>Edit Profile</Text>
                 </TouchableOpacity>
