@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 
-// SCREEN LAMA
+// SCREEN 
 import Home from "../screens/Home";
 import DetailMakanan from "../screens/DetailMakanan";
 import Favorit from "../screens/Favorit";
