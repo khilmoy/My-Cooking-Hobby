@@ -17,6 +17,7 @@ import { colors } from "./assets/theme";
 
 import { NavigationContainer, createNavigationContainerRef } from "@react-navigation/native";
 import Router from "./src/navigation/Router";
+import DetailMakanan from "./src/screens/DetailMakanan";
 
 export const navigationRef = createNavigationContainerRef();
 
@@ -37,9 +38,9 @@ export default function App() {
 
   if (!fontsLoaded) return null;
 
-  // 🔥 ROUTE YANG DISembunyikan
+  //  ROUTE navbar YANG DISembunyikan
   const hideHeader = ["SplashScreen", "Login", "Register"];
-  const hideNavbar = ["SplashScreen", "Login", "Register", "Profile", "EditProfile"];
+  const hideNavbar = ["SplashScreen", "Login", "Register", "Profile", "EditProfile", "EditMenu", "Detail"];
 
   return (
     <NavigationContainer
@@ -58,7 +59,7 @@ export default function App() {
 
         <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
 
-        {/* 🔥 HEADER */}
+        {/*  HEADER */}
         {!hideHeader.includes(activeRoute) && (
           <View style={styles.header}>
             <ChefHat size={26} color={colors.primary} />
@@ -75,7 +76,7 @@ export default function App() {
           <Router />
         </View>
 
-        {/* 🔥 NAVBAR */}
+        {/* NAVBAR */}
         {!hideNavbar.includes(activeRoute) && (
           <View style={styles.bottomBar}>
 

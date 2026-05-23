@@ -6,25 +6,82 @@ import {
   TouchableOpacity,
   Animated
 } from "react-native";
+
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Calendar, Flame, Star, ArrowLeft, Pencil } from "lucide-react-native";
+
+import {
+  Calendar,
+  Flame,
+  Star,
+  ArrowLeft,
+  Pencil,
+  Trash2
+} from "lucide-react-native";
+
 import { useRoute } from "@react-navigation/native";
 import { useRef } from "react";
+import axios from "axios";
 
-export default function DetailMakanan({ navigation, favorit = [], setFavorit }) {
+export default function DetailMakanan({
+  navigation,
+  favorit = [],
+  setFavorit
+}) {
 
   const route = useRoute();
   const { data } = route.params || {};
 
-  const { nama, gambar, tanggal, level, resep } = data || {};
+  const {
+    id,
+    name,
+    image,
+    date,
+    level,
+    recipe
+  } = data || {};
 
-  const isFavorit = favorit.includes(nama);
+  const isFavorit = favorit.includes(name);
 
   const toggleFavorit = () => {
+
     if (isFavorit) {
-      setFavorit(favorit.filter(item => item !== nama));
+
+      setFavorit(
+        favorit.filter(item => item !== name)
+      );
+
     } else {
-      setFavorit([...favorit, nama]);
+
+      setFavorit([
+        ...favorit,
+        name
+      ]);
+    }
+  };
+
+  // DELETE API
+  const handleDelete = async () => {
+
+    try {
+
+      console.log("DATA:", data);
+      console.log("ID:", id);
+
+      if (!id) {
+        alert("ID tidak ditemukan");
+        return;
+      }
+
+      await axios.delete(
+        `https://6a09c79ce7e3f433d4836e58.mockapi.io/Recipes/${String(id)}`
+      );
+
+      navigation.goBack();
+
+    } catch (error) {
+
+      console.log(error.response?.data);
+      console.log(error.message);
     }
   };
 
@@ -39,6 +96,7 @@ export default function DetailMakanan({ navigation, favorit = [], setFavorit }) 
   });
 
   return (
+
     <SafeAreaView style={styles.container}>
 
       <Animated.ScrollView
@@ -51,9 +109,16 @@ export default function DetailMakanan({ navigation, favorit = [], setFavorit }) 
       >
 
         {/* HERO IMAGE */}
-        <Animated.View style={{ transform: [{ translateY: headerY }] }}>
+        <Animated.View
+          style={{
+            transform: [{ translateY: headerY }]
+          }}
+        >
 
-          <ImageBackground source={{ uri: gambar }} style={styles.image}>
+          <ImageBackground
+            source={{ uri: image }}
+            style={styles.image}
+          >
 
             <View style={styles.gradient} />
 
@@ -65,7 +130,9 @@ export default function DetailMakanan({ navigation, favorit = [], setFavorit }) 
             </TouchableOpacity>
 
             <View style={styles.titleWrap}>
-              <Text style={styles.title}>{nama}</Text>
+              <Text style={styles.title}>
+                {name}
+              </Text>
             </View>
 
           </ImageBackground>
@@ -80,37 +147,84 @@ export default function DetailMakanan({ navigation, favorit = [], setFavorit }) 
 
             <View style={styles.chip}>
               <Calendar size={14} color="#666" />
-              <Text style={styles.chipText}>{tanggal}</Text>
+              <Text style={styles.chipText}>
+                {date}
+              </Text>
             </View>
 
             <View style={styles.chip}>
               <Flame size={14} color="#666" />
-              <Text style={styles.chipText}>{level}</Text>
+              <Text style={styles.chipText}>
+                {level}
+              </Text>
             </View>
 
-            <TouchableOpacity style={styles.chip} onPress={toggleFavorit}>
-              <Star size={14} color={isFavorit ? "#ffd700" : "#999"} />
-              <Text style={styles.chipText}>Favorit</Text>
+            <TouchableOpacity
+              style={styles.chip}
+              onPress={toggleFavorit}
+            >
+              <Star
+                size={14}
+                color={isFavorit ? "#ffd700" : "#999"}
+              />
+
+              <Text style={styles.chipText}>
+                Favorit
+              </Text>
             </TouchableOpacity>
 
           </View>
 
-          {/* RESEP  */}
+          {/* RESEP */}
           <View style={styles.recipeCard}>
-            <Text style={styles.section}>Resep Masakan</Text>
 
-            {resep?.split("\n").map((item, index) => (
-              <Text key={index} style={styles.resepItem}>
+            <Text style={styles.section}>
+              Resep Masakan
+            </Text>
+
+            {recipe?.split("\n").map((item, index) => (
+
+              <Text
+                key={index}
+                style={styles.resepItem}
+              >
                 {item}
               </Text>
+
             ))}
 
           </View>
 
-          {/* BUTTON */}
-          <TouchableOpacity style={styles.editBtn}>
+          {/* EDIT BUTTON */}
+          <TouchableOpacity
+            style={styles.editBtn}
+            onPress={() =>
+              navigation.navigate("EditMenu", {
+                data
+              })
+            }
+          >
+
             <Pencil size={18} color="#fff" />
-            <Text style={styles.editText}>Edit Resep</Text>
+
+            <Text style={styles.editText}>
+              Edit Resep
+            </Text>
+
+          </TouchableOpacity>
+
+          {/* DELETE BUTTON */}
+          <TouchableOpacity
+            style={styles.deleteBtn}
+            onPress={handleDelete}
+          >
+
+            <Trash2 size={18} color="#fff" />
+
+            <Text style={styles.deleteText}>
+              Hapus Resep
+            </Text>
+
           </TouchableOpacity>
 
         </View>
@@ -219,6 +333,24 @@ const styles = StyleSheet.create({
   },
 
   editText: {
+    color: "#fff",
+    fontSize: 14,
+    fontFamily: "Pjs-SemiBold"
+  },
+
+  deleteBtn: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 8,
+    backgroundColor: "#ff5252",
+    paddingVertical: 14,
+    borderRadius: 25,
+    marginTop: 12,
+    elevation: 3
+  },
+
+  deleteText: {
     color: "#fff",
     fontSize: 14,
     fontFamily: "Pjs-SemiBold"

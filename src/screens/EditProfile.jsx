@@ -5,20 +5,60 @@ import {
     StyleSheet,
     TouchableOpacity
 } from "react-native";
+
 import { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
+import axios from "axios";
 
-export default function EditProfile({ navigation }) {
+export default function EditProfile({
+    navigation,
+    profile,
+    setProfile
+}) {
 
-    const [nama, setNama] = useState("");
-    const [email, setEmail] = useState("");
-    const [phone, setPhone] = useState("");
+    const [nama, setNama] = useState(profile.nama);
+    const [email, setEmail] = useState(profile.email);
+    const [phone, setPhone] = useState(profile.phone);
+
+    // PUT API
+    const handleUpdate = async () => {
+
+        try {
+
+            // UPDATE API PROFILE
+            await axios.put(
+                "https://6a09c79ce7e3f433d4836e58.mockapi.io/Profiles/1",
+                {
+                    nama,
+                    email,
+                    phone
+                }
+            );
+
+            // UPDATE STATE LOCAL
+            setProfile({
+                nama,
+                email,
+                phone
+            });
+
+            navigation.goBack();
+
+        } catch (error) {
+
+            console.log(error);
+        }
+    };
 
     return (
+
         <SafeAreaView style={styles.container}>
 
-            <Text style={styles.title}>Edit Profile</Text>
+            <Text style={styles.title}>
+                Edit Profile
+            </Text>
 
+            {/* NAMA */}
             <TextInput
                 style={styles.input}
                 value={nama}
@@ -26,6 +66,7 @@ export default function EditProfile({ navigation }) {
                 placeholder="Nama"
             />
 
+            {/* EMAIL */}
             <TextInput
                 style={styles.input}
                 value={email}
@@ -33,6 +74,7 @@ export default function EditProfile({ navigation }) {
                 placeholder="Email"
             />
 
+            {/* PHONE */}
             <TextInput
                 style={styles.input}
                 value={phone}
@@ -43,18 +85,28 @@ export default function EditProfile({ navigation }) {
 
             <View style={styles.buttonContainer}>
 
+                {/* SIMPAN */}
                 <TouchableOpacity
                     style={styles.saveBtn}
-                    onPress={() => navigation.goBack()}
+                    onPress={handleUpdate}
                 >
-                    <Text style={styles.saveText}>Simpan</Text>
+
+                    <Text style={styles.saveText}>
+                        Simpan
+                    </Text>
+
                 </TouchableOpacity>
 
+                {/* BATAL */}
                 <TouchableOpacity
                     style={styles.cancelBtn}
                     onPress={() => navigation.goBack()}
                 >
-                    <Text style={styles.cancelText}>Batal</Text>
+
+                    <Text style={styles.cancelText}>
+                        Batal
+                    </Text>
+
                 </TouchableOpacity>
 
             </View>
@@ -64,6 +116,7 @@ export default function EditProfile({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+
     container: {
         flex: 1,
         padding: 20,
@@ -84,13 +137,11 @@ const styles = StyleSheet.create({
         marginBottom: 15
     },
 
-    // WRAPPER BUTTON
     buttonContainer: {
         marginTop: 20,
         gap: 10
     },
 
-    // SIMPAN
     saveBtn: {
         backgroundColor: "#ff7043",
         padding: 14,
@@ -103,7 +154,6 @@ const styles = StyleSheet.create({
         fontFamily: "Pjs-Bold"
     },
 
-    // BATAL
     cancelBtn: {
         borderWidth: 1.5,
         borderColor: "#ff5252",
@@ -116,4 +166,5 @@ const styles = StyleSheet.create({
         textAlign: "center",
         fontFamily: "Pjs-Bold"
     }
+
 });

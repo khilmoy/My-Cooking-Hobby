@@ -4,7 +4,7 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Image,
+ Image,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -18,15 +18,33 @@ import * as ImagePicker from "expo-image-picker";
 import { ImagePlus, Calendar } from "lucide-react-native";
 import axios from "axios";
 
-export default function TambahMenu({ navigation }) {
+export default function EditMenu({
+  navigation,
+  route
+}) {
 
-  const [nama, setNama] = useState("");
-  const [resep, setResep] = useState("");
-  const [tanggal, setTanggal] = useState(new Date());
-  const [showPicker, setShowPicker] = useState(false);
-  const [level, setLevel] = useState("");
-  const [gambar, setGambar] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const { data } = route.params;
+
+  const [nama, setNama] =
+    useState(data.name);
+
+  const [resep, setResep] =
+    useState(data.recipe);
+
+  const [tanggal, setTanggal] =
+    useState(new Date());
+
+  const [showPicker, setShowPicker] =
+    useState(false);
+
+  const [level, setLevel] =
+    useState(data.level);
+
+  const [gambar, setGambar] =
+    useState(data.image);
+
+  const [loading, setLoading] =
+    useState(false);
 
   // PILIH GAMBAR
   const pilihGambar = async () => {
@@ -35,30 +53,37 @@ export default function TambahMenu({ navigation }) {
 
     setTimeout(async () => {
 
-      // IZIN GALERI
       const permission =
         await ImagePicker.requestMediaLibraryPermissionsAsync();
 
       if (!permission.granted) {
+
         alert("Izin galeri diperlukan");
         return;
       }
 
-      // BUKA GALERI
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        quality: 1
-      });
+      const result =
+        await ImagePicker.launchImageLibraryAsync({
+          mediaTypes:
+            ImagePicker.MediaTypeOptions.Images,
+          quality: 1
+        });
 
       if (!result.canceled) {
-        setGambar(result.assets[0].uri);
+
+        setGambar(
+          result.assets[0].uri
+        );
       }
 
     }, 200);
   };
 
   // DATE
-  const onChangeTanggal = (event, selectedDate) => {
+  const onChangeTanggal = (
+    event,
+    selectedDate
+  ) => {
 
     setShowPicker(false);
 
@@ -67,15 +92,15 @@ export default function TambahMenu({ navigation }) {
     }
   };
 
-  // POST API
-  const handleUpload = async () => {
+  // PUT API
+  const handleUpdate = async () => {
 
     setLoading(true);
 
     try {
 
-      await axios.post(
-        "https://6a09c79ce7e3f433d4836e58.mockapi.io/Recipes",
+      await axios.put(
+        `https://6a09c79ce7e3f433d4836e58.mockapi.io/Recipes/${data.id}`,
         {
           name: nama,
 
@@ -83,21 +108,26 @@ export default function TambahMenu({ navigation }) {
             ? gambar
             : "https://images.unsplash.com/photo-1512058564366-18510be2db19?w=800",
 
-          date: tanggal.toLocaleDateString("id-ID", {
-            day: "numeric",
-            month: "long",
-            year: "numeric"
-          }),
+          date: tanggal.toLocaleDateString(
+            "id-ID",
+            {
+              day: "numeric",
+              month: "long",
+              year: "numeric"
+            }
+          ),
 
           level: level,
+
           recipe: resep,
+
           favorite: false
         }
       );
 
       setLoading(false);
 
-      navigation.goBack();
+      navigation.navigate("Home");
 
     } catch (error) {
 
@@ -111,13 +141,19 @@ export default function TambahMenu({ navigation }) {
 
     <KeyboardAvoidingView
       style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      behavior={
+        Platform.OS === "ios"
+          ? "padding"
+          : "height"
+      }
     >
 
-      <ScrollView contentContainerStyle={styles.container}>
+      <ScrollView
+        contentContainerStyle={styles.container}
+      >
 
         <Text style={styles.title}>
-          Tambah Menu
+          Edit Menu
         </Text>
 
         {/* INPUT NAMA */}
@@ -147,7 +183,12 @@ export default function TambahMenu({ navigation }) {
 
           {gambar ? (
 
-            <View>
+            <View
+              style={{
+                width: "100%",
+                height: "100%"
+              }}
+            >
 
               {/* PREVIEW */}
               <Image
@@ -158,7 +199,10 @@ export default function TambahMenu({ navigation }) {
               {/* BUTTON GANTI */}
               <View style={styles.changeImageBtn}>
 
-                <ImagePlus size={16} color="#fff" />
+                <ImagePlus
+                  size={16}
+                  color="#fff"
+                />
 
                 <Text style={styles.changeImageText}>
                   Ganti Gambar
@@ -172,7 +216,10 @@ export default function TambahMenu({ navigation }) {
 
             <>
 
-              <ImagePlus size={40} color="#999" />
+              <ImagePlus
+                size={40}
+                color="#999"
+              />
 
               <Text style={styles.imageText}>
                 Pilih Gambar
@@ -186,30 +233,40 @@ export default function TambahMenu({ navigation }) {
 
         {/* DATE */}
         <TouchableOpacity
-          onPress={() => setShowPicker(true)}
+          onPress={() =>
+            setShowPicker(true)
+          }
           style={styles.dateInput}
         >
 
-          <Calendar size={18} color="#666" />
+          <Calendar
+            size={18}
+            color="#666"
+          />
 
           <Text style={{ marginLeft: 10 }}>
-            {tanggal.toLocaleDateString("id-ID", {
-              day: "numeric",
-              month: "long",
-              year: "numeric"
-            })}
+            {tanggal.toLocaleDateString(
+              "id-ID",
+              {
+                day: "numeric",
+                month: "long",
+                year: "numeric"
+              }
+            )}
           </Text>
 
         </TouchableOpacity>
 
         {/* DATE PICKER */}
         {showPicker && (
+
           <DateTimePicker
             value={tanggal}
             mode="date"
             display="default"
             onChange={onChangeTanggal}
           />
+
         )}
 
         {/* LEVEL */}
@@ -219,37 +276,42 @@ export default function TambahMenu({ navigation }) {
 
         <View style={styles.levelContainer}>
 
-          {["Mudah", "Sedang", "Sulit"].map((item) => (
+          {["Mudah", "Sedang", "Sulit"].map(
+            (item) => (
 
-            <TouchableOpacity
-              key={item}
-              style={[
-                styles.levelBtn,
-                level === item && styles.active
-              ]}
-              onPress={() => setLevel(item)}
-            >
-
-              <Text
-                style={
-                  level === item
-                    ? styles.textActive
-                    : styles.text
+              <TouchableOpacity
+                key={item}
+                style={[
+                  styles.levelBtn,
+                  level === item &&
+                  styles.active
+                ]}
+                onPress={() =>
+                  setLevel(item)
                 }
               >
-                {item}
-              </Text>
 
-            </TouchableOpacity>
+                <Text
+                  style={
+                    level === item
+                      ? styles.textActive
+                      : styles.text
+                  }
+                >
+                  {item}
+                </Text>
 
-          ))}
+              </TouchableOpacity>
+
+            )
+          )}
 
         </View>
 
         {/* BUTTON */}
         <TouchableOpacity
           style={styles.button}
-          onPress={handleUpload}
+          onPress={handleUpdate}
         >
 
           <Text style={styles.buttonText}>
@@ -264,10 +326,12 @@ export default function TambahMenu({ navigation }) {
       {loading && (
 
         <View style={styles.loadingOverlay}>
+
           <ActivityIndicator
             size="large"
             color="#ff7043"
           />
+
         </View>
 
       )}
@@ -308,14 +372,14 @@ const styles = StyleSheet.create({
   },
 
   imagePicker: {
-    borderWidth: 1,
-    borderColor: "#ddd",
+    width: "100%",
+    height: 200,
     borderRadius: 12,
-    padding: 15,
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 15,
-    overflow: "hidden"
+    overflow: "hidden",
+    backgroundColor: "#f1f1f1"
   },
 
   imageText: {
@@ -325,9 +389,8 @@ const styles = StyleSheet.create({
   },
 
   previewImage: {
-    width: 320,
-    height: 180,
-    borderRadius: 12
+    width: "100%",
+    height: "100%"
   },
 
   changeImageBtn: {

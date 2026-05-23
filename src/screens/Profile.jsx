@@ -5,12 +5,27 @@ import {
     TouchableOpacity,
     ScrollView
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { User, Mail, LogOut, Pencil, Phone, ArrowLeft } from "lucide-react-native";
 
-export default function Profile({ navigation }) {
+import { SafeAreaView } from "react-native-safe-area-context";
+
+import {
+    User,
+    Mail,
+    LogOut,
+    Pencil,
+    Phone,
+    ArrowLeft
+} from "lucide-react-native";
+
+export default function Profile({
+    navigation,
+    profile
+}) {
+
     return (
+
         <SafeAreaView style={styles.container}>
+
             <ScrollView showsVerticalScrollIndicator={false}>
 
                 {/* BACK BUTTON */}
@@ -28,8 +43,14 @@ export default function Profile({ navigation }) {
                         <User size={50} color="#000000" />
                     </View>
 
-                    <Text style={styles.name}>Muhammad Khilmi Lutfan Albab</Text>
-                    <Text style={styles.email}>khilmi55@gmail.com</Text>
+                    <Text style={styles.name}>
+                        {profile.nama}
+                    </Text>
+
+                    <Text style={styles.email}>
+                        {profile.email}
+                    </Text>
+
                 </View>
 
                 {/* INFO CARD */}
@@ -37,17 +58,26 @@ export default function Profile({ navigation }) {
 
                     <View style={styles.row}>
                         <User size={20} color="#555" />
-                        <Text style={styles.text}>Muhammad Khilmi Lutfan Albab</Text>
+
+                        <Text style={styles.text}>
+                            {profile.nama}
+                        </Text>
                     </View>
 
                     <View style={styles.row}>
                         <Mail size={20} color="#555" />
-                        <Text style={styles.text}>khilmi55@gmail.com</Text>
+
+                        <Text style={styles.text}>
+                            {profile.email}
+                        </Text>
                     </View>
 
                     <View style={styles.row}>
                         <Phone size={20} color="#555" />
-                        <Text style={styles.text}>08536281234</Text>
+
+                        <Text style={styles.text}>
+                            {profile.phone}
+                        </Text>
                     </View>
 
                 </View>
@@ -57,22 +87,34 @@ export default function Profile({ navigation }) {
                     style={styles.editBtn}
                     onPress={() => navigation.navigate("EditProfile")}
                 >
+
                     <Pencil size={18} color="#fff" />
-                    <Text style={styles.editText}>Edit Profile</Text>
+
+                    <Text style={styles.editText}>
+                        Edit Profile
+                    </Text>
+
                 </TouchableOpacity>
 
                 {/* LOGOUT */}
                 <TouchableOpacity style={styles.logoutBtn}>
+
                     <LogOut size={18} color="#ff5252" />
-                    <Text style={styles.logoutText}>Logout</Text>
+
+                    <Text style={styles.logoutText}>
+                        Logout
+                    </Text>
+
                 </TouchableOpacity>
 
             </ScrollView>
+
         </SafeAreaView>
     );
 }
 
-//  STYLE 
+
+// STYLE
 const styles = StyleSheet.create({
 
     container: {
