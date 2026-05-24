@@ -10,7 +10,7 @@ import {
 
 import { Calendar, Flame, Star } from "lucide-react-native";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { supabase } from "../libs/supabase";
 
 export default function CookingList({
     kategori,
@@ -22,24 +22,26 @@ export default function CookingList({
     const [dataMenu, setDataMenu] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    // GET API
+    // GET SUPABASE
     const getMenu = async () => {
 
         try {
 
             setLoading(true);
 
-            const response = await axios.get(
-                "https://6a09c79ce7e3f433d4836e58.mockapi.io/Recipes"
-            );
+            const { data, error } = await supabase
+                .from("recipes")
+                .select("*");
 
-            setDataMenu(response.data);
+            if (error) throw error;
+
+            setDataMenu(data);
 
             setLoading(false);
 
         } catch (error) {
 
-            console.log(error);
+            console.log(error.message);
 
             setLoading(false);
         }

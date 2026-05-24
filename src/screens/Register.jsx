@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+
 import {
   View,
   Text,
@@ -9,18 +10,125 @@ import {
   TouchableWithoutFeedback,
   KeyboardAvoidingView,
   Platform,
-  ScrollView
+  ScrollView,
+  Alert,
+  ActivityIndicator
 } from "react-native";
 
-import { SafeAreaView } from "react-native-safe-area-context";
-import { ChefHat } from "lucide-react-native";
+import {
+  SafeAreaView
+} from "react-native-safe-area-context";
 
-export default function Register({ navigation }) {
+import {
+  ChefHat,
+  Eye,
+  EyeOff
+} from "lucide-react-native";
 
-  const [nama, setNama] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [password, setPassword] = useState("");
+import {
+  supabase
+} from "../libs/supabase";
+
+export default function Register({
+  navigation
+}) {
+
+  const [nama, setNama]
+    = useState("");
+
+  const [email, setEmail]
+    = useState("");
+
+  const [phone, setPhone]
+    = useState("");
+
+  const [password, setPassword]
+    = useState("");
+
+  const [loading, setLoading]
+    = useState(false);
+
+  const [showPassword,
+    setShowPassword]
+    = useState(false);
+
+  // REGISTER
+  const handleRegister = async () => {
+
+    if (
+      !nama ||
+      !email ||
+      !phone ||
+      !password
+    ) {
+
+      Alert.alert(
+        "Error",
+        "Semua field wajib diisi"
+      );
+
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+
+      // AUTH REGISTER
+      const {
+        data: authData,
+        error: signUpError
+      } = await supabase.auth.signUp({
+        email,
+        password,
+      });
+
+      if (signUpError)
+        throw signUpError;
+
+      // INSERT USER
+      const { error: insertError }
+        = await supabase
+          .from("users")
+          .insert([
+            {
+              id: authData.user.id,
+
+              full_name: nama,
+
+              phone: phone,
+
+              email: email,
+
+              created_at:
+                new Date().toISOString(),
+            }
+          ]);
+
+      if (insertError)
+        throw insertError;
+
+      setLoading(false);
+
+      Alert.alert(
+        "Berhasil",
+        "Akun berhasil dibuat"
+      );
+
+      navigation.navigate("Login");
+
+    } catch (error) {
+
+      console.log(error.message);
+
+      Alert.alert(
+        "Error",
+        error.message
+      );
+
+      setLoading(false);
+    }
+  };
 
   return (
 
@@ -28,14 +136,26 @@ export default function Register({ navigation }) {
 
       <KeyboardAvoidingView
         style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+
+        behavior={
+          Platform.OS === "ios"
+            ? "padding"
+            : "height"
+        }
       >
 
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <TouchableWithoutFeedback
+          onPress={Keyboard.dismiss}
+        >
 
           <ScrollView
-            contentContainerStyle={styles.scroll}
-            showsVerticalScrollIndicator={false}
+            contentContainerStyle={
+              styles.scroll
+            }
+
+            showsVerticalScrollIndicator={
+              false
+            }
           >
 
             <View style={styles.content}>
@@ -44,7 +164,12 @@ export default function Register({ navigation }) {
               <View style={styles.header}>
 
                 <View style={styles.iconBox}>
-                  <ChefHat size={32} color="#ff7043" />
+
+                  <ChefHat
+                    size={32}
+                    color="#ff7043"
+                  />
+
                 </View>
 
                 <Text style={styles.title}>
@@ -52,7 +177,8 @@ export default function Register({ navigation }) {
                 </Text>
 
                 <Text style={styles.subtitle}>
-                  Mulai simpan dan kelola resep favoritmu
+                  Mulai simpan dan
+                  kelola resep favoritmu
                 </Text>
 
               </View>
@@ -60,6 +186,7 @@ export default function Register({ navigation }) {
               {/* FORM */}
               <View style={styles.form}>
 
+                {/* NAMA */}
                 <TextInput
                   placeholder="Nama lengkap"
                   placeholderTextColor="#999"
@@ -68,15 +195,18 @@ export default function Register({ navigation }) {
                   style={styles.input}
                 />
 
+                {/* EMAIL */}
                 <TextInput
                   placeholder="Email"
                   placeholderTextColor="#999"
                   value={email}
                   onChangeText={setEmail}
                   keyboardType="email-address"
+                  autoCapitalize="none"
                   style={styles.input}
                 />
 
+                {/* PHONE */}
                 <TextInput
                   placeholder="No Telepon"
                   placeholderTextColor="#999"
@@ -86,14 +216,53 @@ export default function Register({ navigation }) {
                   style={styles.input}
                 />
 
-                <TextInput
-                  placeholder="Password"
-                  placeholderTextColor="#999"
-                  value={password}
-                  onChangeText={setPassword}
-                  secureTextEntry
-                  style={styles.input}
-                />
+                {/* PASSWORD */}
+                <View
+                  style={
+                    styles.passwordContainer
+                  }
+                >
+
+                  <TextInput
+                    placeholder="Password"
+                    placeholderTextColor="#999"
+                    value={password}
+                    onChangeText={setPassword}
+                    secureTextEntry={
+                      !showPassword
+                    }
+                    style={
+                      styles.passwordInput
+                    }
+                  />
+
+                  <TouchableOpacity
+                    onPress={() =>
+                      setShowPassword(
+                        !showPassword
+                      )
+                    }
+                  >
+
+                    {showPassword ? (
+
+                      <EyeOff
+                        size={20}
+                        color="#777"
+                      />
+
+                    ) : (
+
+                      <Eye
+                        size={20}
+                        color="#777"
+                      />
+
+                    )}
+
+                  </TouchableOpacity>
+
+                </View>
 
               </View>
 
@@ -102,19 +271,46 @@ export default function Register({ navigation }) {
 
                 <TouchableOpacity
                   style={styles.button}
-                  onPress={() => navigation.navigate("Login")}
+                  onPress={
+                    handleRegister
+                  }
+
+                  disabled={loading}
                 >
-                  <Text style={styles.buttonText}>
-                    Daftar
-                  </Text>
+
+                  {loading ? (
+
+                    <ActivityIndicator
+                      color="#fff"
+                    />
+
+                  ) : (
+
+                    <Text
+                      style={
+                        styles.buttonText
+                      }
+                    >
+                      Daftar
+                    </Text>
+
+                  )}
+
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  onPress={() => navigation.navigate("Login")}
+                  onPress={() =>
+                    navigation.navigate(
+                      "Login"
+                    )
+                  }
                 >
+
                   <Text style={styles.link}>
-                    Sudah punya akun? Masuk
+                    Sudah punya akun?
+                    Masuk
                   </Text>
+
                 </TouchableOpacity>
 
               </View>
@@ -183,6 +379,21 @@ const styles = StyleSheet.create({
     backgroundColor: "#f5f5f5",
     padding: 14,
     borderRadius: 12,
+    fontSize: 14
+  },
+
+  passwordContainer: {
+    backgroundColor: "#f5f5f5",
+    borderRadius: 12,
+    paddingHorizontal: 14,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between"
+  },
+
+  passwordInput: {
+    flex: 1,
+    paddingVertical: 14,
     fontSize: 14
   },
 

@@ -13,20 +13,46 @@ import {
 } from "react-native";
 
 import { useState } from "react";
-import DateTimePicker from "@react-native-community/datetimepicker";
-import * as ImagePicker from "expo-image-picker";
-import { ImagePlus, Calendar } from "lucide-react-native";
-import axios from "axios";
 
-export default function TambahMenu({ navigation }) {
+import DateTimePicker
+  from "@react-native-community/datetimepicker";
 
-  const [nama, setNama] = useState("");
-  const [resep, setResep] = useState("");
-  const [tanggal, setTanggal] = useState(new Date());
-  const [showPicker, setShowPicker] = useState(false);
-  const [level, setLevel] = useState("");
-  const [gambar, setGambar] = useState(null);
-  const [loading, setLoading] = useState(false);
+import * as ImagePicker
+  from "expo-image-picker";
+
+import {
+  ImagePlus,
+  Calendar
+} from "lucide-react-native";
+
+import {
+  supabase
+} from "../libs/supabase";
+
+export default function TambahMenu({
+  navigation
+}) {
+
+  const [nama, setNama]
+    = useState("");
+
+  const [resep, setResep]
+    = useState("");
+
+  const [tanggal, setTanggal]
+    = useState(new Date());
+
+  const [showPicker, setShowPicker]
+    = useState(false);
+
+  const [level, setLevel]
+    = useState("");
+
+  const [gambar, setGambar]
+    = useState(null);
+
+  const [loading, setLoading]
+    = useState(false);
 
   // PILIH GAMBAR
   const pilihGambar = async () => {
@@ -37,63 +63,106 @@ export default function TambahMenu({ navigation }) {
 
       // IZIN GALERI
       const permission =
-        await ImagePicker.requestMediaLibraryPermissionsAsync();
+        await ImagePicker
+          .requestMediaLibraryPermissionsAsync();
 
       if (!permission.granted) {
-        alert("Izin galeri diperlukan");
+
+        alert(
+          "Izin galeri diperlukan"
+        );
+
         return;
       }
 
       // BUKA GALERI
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        quality: 1
-      });
+      const result =
+        await ImagePicker
+          .launchImageLibraryAsync({
+            mediaTypes:
+              ImagePicker
+                .MediaTypeOptions
+                .Images,
+
+            quality: 1
+          });
 
       if (!result.canceled) {
-        setGambar(result.assets[0].uri);
+
+        setGambar(
+          result.assets[0].uri
+        );
       }
 
     }, 200);
   };
 
   // DATE
-  const onChangeTanggal = (event, selectedDate) => {
+  const onChangeTanggal = (
+    event,
+    selectedDate
+  ) => {
 
     setShowPicker(false);
 
     if (selectedDate) {
-      setTanggal(selectedDate);
+
+      setTanggal(
+        selectedDate
+      );
     }
   };
 
-  // POST API
+  // INSERT SUPABASE
   const handleUpload = async () => {
+
+    if (
+      !nama ||
+      !resep ||
+      !gambar ||
+      !level
+    ) {
+
+      alert(
+        "Semua data wajib diisi"
+      );
+
+      return;
+    }
 
     setLoading(true);
 
     try {
 
-      await axios.post(
-        "https://6a09c79ce7e3f433d4836e58.mockapi.io/Recipes",
-        {
-          name: nama,
+      const { error }
+        = await supabase
+          .from("recipes")
+          .insert([
+            {
+              name: nama,
 
-          image: gambar?.startsWith("http")
-            ? gambar
-            : "https://images.unsplash.com/photo-1512058564366-18510be2db19?w=800",
+              // IMAGE
+              image: gambar,
 
-          date: tanggal.toLocaleDateString("id-ID", {
-            day: "numeric",
-            month: "long",
-            year: "numeric"
-          }),
+              date:
+                tanggal.toLocaleDateString(
+                  "id-ID",
+                  {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric"
+                  }
+                ),
 
-          level: level,
-          recipe: resep,
-          favorite: false
-        }
-      );
+              level: level,
+
+              recipe: resep,
+
+              favorite: false
+            }
+          ]);
+
+      if (error) throw error;
 
       setLoading(false);
 
@@ -101,7 +170,13 @@ export default function TambahMenu({ navigation }) {
 
     } catch (error) {
 
-      console.log(error);
+      console.log(
+        error.message
+      );
+
+      alert(
+        error.message
+      );
 
       setLoading(false);
     }
@@ -111,10 +186,19 @@ export default function TambahMenu({ navigation }) {
 
     <KeyboardAvoidingView
       style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+
+      behavior={
+        Platform.OS === "ios"
+          ? "padding"
+          : "height"
+      }
     >
 
-      <ScrollView contentContainerStyle={styles.container}>
+      <ScrollView
+        contentContainerStyle={
+          styles.container
+        }
+      >
 
         <Text style={styles.title}>
           Tambah Menu
@@ -151,16 +235,32 @@ export default function TambahMenu({ navigation }) {
 
               {/* PREVIEW */}
               <Image
-                source={{ uri: gambar }}
-                style={styles.previewImage}
+                source={{
+                  uri: gambar
+                }}
+
+                style={
+                  styles.previewImage
+                }
               />
 
               {/* BUTTON GANTI */}
-              <View style={styles.changeImageBtn}>
+              <View
+                style={
+                  styles.changeImageBtn
+                }
+              >
 
-                <ImagePlus size={16} color="#fff" />
+                <ImagePlus
+                  size={16}
+                  color="#fff"
+                />
 
-                <Text style={styles.changeImageText}>
+                <Text
+                  style={
+                    styles.changeImageText
+                  }
+                >
                   Ganti Gambar
                 </Text>
 
@@ -172,9 +272,16 @@ export default function TambahMenu({ navigation }) {
 
             <>
 
-              <ImagePlus size={40} color="#999" />
+              <ImagePlus
+                size={40}
+                color="#999"
+              />
 
-              <Text style={styles.imageText}>
+              <Text
+                style={
+                  styles.imageText
+                }
+              >
                 Pilih Gambar
               </Text>
 
@@ -186,30 +293,51 @@ export default function TambahMenu({ navigation }) {
 
         {/* DATE */}
         <TouchableOpacity
-          onPress={() => setShowPicker(true)}
+          onPress={() =>
+            setShowPicker(true)
+          }
+
           style={styles.dateInput}
         >
 
-          <Calendar size={18} color="#666" />
+          <Calendar
+            size={18}
+            color="#666"
+          />
 
-          <Text style={{ marginLeft: 10 }}>
-            {tanggal.toLocaleDateString("id-ID", {
-              day: "numeric",
-              month: "long",
-              year: "numeric"
-            })}
+          <Text
+            style={{
+              marginLeft: 10
+            }}
+          >
+
+            {
+              tanggal.toLocaleDateString(
+                "id-ID",
+                {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric"
+                }
+              )
+            }
+
           </Text>
 
         </TouchableOpacity>
 
         {/* DATE PICKER */}
         {showPicker && (
+
           <DateTimePicker
             value={tanggal}
             mode="date"
             display="default"
-            onChange={onChangeTanggal}
+            onChange={
+              onChangeTanggal
+            }
           />
+
         )}
 
         {/* LEVEL */}
@@ -217,32 +345,50 @@ export default function TambahMenu({ navigation }) {
           Tingkat Kesulitan
         </Text>
 
-        <View style={styles.levelContainer}>
+        <View
+          style={
+            styles.levelContainer
+          }
+        >
 
-          {["Mudah", "Sedang", "Sulit"].map((item) => (
+          {
+            [
+              "Mudah",
+              "Sedang",
+              "Sulit"
+            ].map((item) => (
 
-            <TouchableOpacity
-              key={item}
-              style={[
-                styles.levelBtn,
-                level === item && styles.active
-              ]}
-              onPress={() => setLevel(item)}
-            >
+              <TouchableOpacity
+                key={item}
 
-              <Text
-                style={
+                style={[
+                  styles.levelBtn,
+
                   level === item
-                    ? styles.textActive
-                    : styles.text
+                  && styles.active
+                ]}
+
+                onPress={() =>
+                  setLevel(item)
                 }
               >
-                {item}
-              </Text>
 
-            </TouchableOpacity>
+                <Text
+                  style={
+                    level === item
+                      ? styles.textActive
+                      : styles.text
+                  }
+                >
 
-          ))}
+                  {item}
+
+                </Text>
+
+              </TouchableOpacity>
+
+            ))
+          }
 
         </View>
 
@@ -252,7 +398,9 @@ export default function TambahMenu({ navigation }) {
           onPress={handleUpload}
         >
 
-          <Text style={styles.buttonText}>
+          <Text
+            style={styles.buttonText}
+          >
             Simpan
           </Text>
 
@@ -263,11 +411,17 @@ export default function TambahMenu({ navigation }) {
       {/* LOADING */}
       {loading && (
 
-        <View style={styles.loadingOverlay}>
+        <View
+          style={
+            styles.loadingOverlay
+          }
+        >
+
           <ActivityIndicator
             size="large"
             color="#ff7043"
           />
+
         </View>
 
       )}

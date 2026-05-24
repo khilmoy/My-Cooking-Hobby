@@ -7,62 +7,78 @@ import {
 } from "react-native";
 
 import { useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
-import axios from "axios";
+
+import { SafeAreaView }
+    from "react-native-safe-area-context";
+
+import { supabase }
+    from "../libs/supabase";
 
 export default function EditProfile({
     navigation,
-    profile,
-    setProfile
+    route
 }) {
 
-    const [nama, setNama] = useState(profile.nama);
-    const [email, setEmail] = useState(profile.email);
-    const [phone, setPhone] = useState(profile.phone);
+    const { profile } =
+        route.params;
 
-    // PUT API
+    const [fullName, setFullName]
+        = useState(
+            profile.full_name
+        );
+
+    const [email, setEmail]
+        = useState(
+            profile.email
+        );
+
+    const [phone, setPhone]
+        = useState(
+            profile.phone
+        );
+
+    // UPDATE PROFILE
     const handleUpdate = async () => {
 
         try {
 
-            // UPDATE API PROFILE
-            await axios.put(
-                "https://6a09c79ce7e3f433d4836e58.mockapi.io/Profiles/1",
-                {
-                    nama,
-                    email,
-                    phone
-                }
-            );
+            const { error }
+                = await supabase
+                    .from("users")
+                    .update({
+                        full_name: fullName,
+                        email: email,
+                        phone: phone
+                    })
+                    .eq("id", profile.id);
 
-            // UPDATE STATE LOCAL
-            setProfile({
-                nama,
-                email,
-                phone
-            });
+            if (error) throw error;
 
             navigation.goBack();
 
         } catch (error) {
 
-            console.log(error);
+            console.log(
+                error.message
+            );
         }
     };
 
     return (
 
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView
+            style={styles.container}
+        >
 
             <Text style={styles.title}>
                 Edit Profile
             </Text>
 
-            {/* NAMA */}
+            {/* FULL NAME */}
             <TextInput
                 style={styles.input}
-                value={nama}
-                onChangeText={setNama}
+                value={fullName}
+                onChangeText={setFullName}
                 placeholder="Nama"
             />
 
@@ -83,7 +99,9 @@ export default function EditProfile({
                 keyboardType="phone-pad"
             />
 
-            <View style={styles.buttonContainer}>
+            <View
+                style={styles.buttonContainer}
+            >
 
                 {/* SIMPAN */}
                 <TouchableOpacity
@@ -91,7 +109,9 @@ export default function EditProfile({
                     onPress={handleUpdate}
                 >
 
-                    <Text style={styles.saveText}>
+                    <Text
+                        style={styles.saveText}
+                    >
                         Simpan
                     </Text>
 
@@ -100,10 +120,14 @@ export default function EditProfile({
                 {/* BATAL */}
                 <TouchableOpacity
                     style={styles.cancelBtn}
-                    onPress={() => navigation.goBack()}
+                    onPress={() =>
+                        navigation.goBack()
+                    }
                 >
 
-                    <Text style={styles.cancelText}>
+                    <Text
+                        style={styles.cancelText}
+                    >
                         Batal
                     </Text>
 

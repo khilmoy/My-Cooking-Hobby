@@ -9,112 +9,304 @@ import {
   Keyboard
 } from "react-native";
 
-import { useState, useEffect } from "react";
-import { useFonts } from "expo-font";
-import fontType from "./assets/theme/fonts";
-import { ChefHat, Home, Plus, Star, User } from "lucide-react-native";
-import { colors } from "./assets/theme";
+import {
+  useState,
+  useEffect
+} from "react";
 
-import { NavigationContainer, createNavigationContainerRef } from "@react-navigation/native";
-import Router from "./src/navigation/Router";
-import DetailMakanan from "./src/screens/DetailMakanan";
+import {
+  useFonts
+} from "expo-font";
 
-export const navigationRef = createNavigationContainerRef();
+import {
+  SafeAreaView
+} from "react-native-safe-area-context";
+
+import fontType
+  from "./assets/theme/fonts";
+
+import {
+  ChefHat,
+  Home,
+  Plus,
+  Star,
+  User
+} from "lucide-react-native";
+
+import {
+  colors
+} from "./assets/theme";
+
+import {
+  NavigationContainer,
+  createNavigationContainerRef
+} from "@react-navigation/native";
+
+import {
+  ActionSheetProvider
+} from "@expo/react-native-action-sheet";
+
+import Router
+  from "./src/navigation/Router";
+
+export const navigationRef =
+  createNavigationContainerRef();
 
 export default function App() {
 
-  const [fontsLoaded] = useFonts(fontType);
-  const [activeRoute, setActiveRoute] = useState("SplashScreen");
+  const [fontsLoaded]
+    = useFonts(fontType);
+
+  const [activeRoute, setActiveRoute]
+    = useState("SplashScreen");
 
   useEffect(() => {
-    const show = Keyboard.addListener("keyboardDidShow", () => {});
-    const hide = Keyboard.addListener("keyboardDidHide", () => {});
+
+    const show =
+      Keyboard.addListener(
+        "keyboardDidShow",
+        () => {}
+      );
+
+    const hide =
+      Keyboard.addListener(
+        "keyboardDidHide",
+        () => {}
+      );
 
     return () => {
+
       show.remove();
       hide.remove();
     };
+
   }, []);
 
   if (!fontsLoaded) return null;
 
-  //  ROUTE navbar YANG DISembunyikan
-  const hideHeader = ["SplashScreen", "Login", "Register"];
-  const hideNavbar = ["SplashScreen", "Login", "Register", "Profile", "EditProfile", "EditMenu", "Detail"];
+  // HEADER HIDE
+  const hideHeader = [
+    "SplashScreen",
+    "Login",
+    "Register"
+  ];
+
+  // NAVBAR HIDE
+  const hideNavbar = [
+    "SplashScreen",
+    "Login",
+    "Register",
+    "Profile",
+    "EditProfile",
+    "EditMenu",
+    "Detail"
+  ];
 
   return (
-    <NavigationContainer
-      ref={navigationRef}
-      onStateChange={() => {
-        const route = navigationRef.getCurrentRoute();
-        if (route?.name) {
-          setActiveRoute(route.name);
-        }
-      }}
-    >
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+
+    <ActionSheetProvider>
+
+      <SafeAreaView
+        style={styles.container}
+        edges={["top"]}
       >
 
-        <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
+        <NavigationContainer
+          ref={navigationRef}
+          onStateChange={() => {
 
-        {/*  HEADER */}
-        {!hideHeader.includes(activeRoute) && (
-          <View style={styles.header}>
-            <ChefHat size={26} color={colors.primary} />
-            <Text style={styles.title}>My Cooking Hobby</Text>
+            const route =
+              navigationRef.getCurrentRoute();
 
-            <TouchableOpacity onPress={() => navigationRef.navigate("Profile")}>
-              <User size={24} color="#333" />
-            </TouchableOpacity>
-          </View>
-        )}
+            if (route?.name) {
+              setActiveRoute(route.name);
+            }
+          }}
+        >
 
-        {/* STACK */}
-        <View style={{ flex: 1 }}>
-          <Router />
-        </View>
+          <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior={
+              Platform.OS === "ios"
+                ? "padding"
+                : undefined
+            }
+          >
 
-        {/* NAVBAR */}
-        {!hideNavbar.includes(activeRoute) && (
-          <View style={styles.bottomBar}>
+            <StatusBar
+              translucent={false}
+              backgroundColor="#ffffff"
+              barStyle="dark-content"
+            />
 
-            <TouchableOpacity
-              onPress={() => navigationRef.navigate("Home")}
-              style={activeRoute === "Home" ? styles.tabActive : styles.tabItem}
-            >
-              <Home size={20} color={activeRoute === "Home" ? "#fff" : "#999"} />
-              <Text style={activeRoute === "Home" ? styles.tabTextActive : styles.tabText}>
-                Home
-              </Text>
-            </TouchableOpacity>
+            {/* HEADER */}
+            {!hideHeader.includes(
+              activeRoute
+            ) && (
 
-            <TouchableOpacity
-              onPress={() => navigationRef.navigate("Tambah")}
-              style={activeRoute === "Tambah" ? styles.tabActive : styles.tabItem}
-            >
-              <Plus size={20} color={activeRoute === "Tambah" ? "#fff" : "#999"} />
-              <Text style={activeRoute === "Tambah" ? styles.tabTextActive : styles.tabText}>
-                Tambah
-              </Text>
-            </TouchableOpacity>
+              <View style={styles.header}>
 
-            <TouchableOpacity
-              onPress={() => navigationRef.navigate("Favorit")}
-              style={activeRoute === "Favorit" ? styles.tabActive : styles.tabItem}
-            >
-              <Star size={20} color={activeRoute === "Favorit" ? "#fff" : "#999"} />
-              <Text style={activeRoute === "Favorit" ? styles.tabTextActive : styles.tabText}>
-                Favorit
-              </Text>
-            </TouchableOpacity>
+                <ChefHat
+                  size={26}
+                  color={colors.primary}
+                />
 
-          </View>
-        )}
+                <Text style={styles.title}>
+                  My Cooking Hobby
+                </Text>
 
-      </KeyboardAvoidingView>
-    </NavigationContainer>
+                <TouchableOpacity
+                  onPress={() =>
+                    navigationRef.navigate(
+                      "Profile"
+                    )
+                  }
+                >
+
+                  <User
+                    size={24}
+                    color="#333"
+                  />
+
+                </TouchableOpacity>
+
+              </View>
+
+            )}
+
+            {/* ROUTER */}
+            <View style={{ flex: 1 }}>
+
+              <Router />
+
+            </View>
+
+            {/* NAVBAR */}
+            {!hideNavbar.includes(
+              activeRoute
+            ) && (
+
+              <View style={styles.bottomBar}>
+
+                {/* HOME */}
+                <TouchableOpacity
+                  onPress={() =>
+                    navigationRef.navigate(
+                      "Home"
+                    )
+                  }
+
+                  style={
+                    activeRoute === "Home"
+                      ? styles.tabActive
+                      : styles.tabItem
+                  }
+                >
+
+                  <Home
+                    size={20}
+                    color={
+                      activeRoute === "Home"
+                        ? "#fff"
+                        : "#999"
+                    }
+                  />
+
+                  <Text
+                    style={
+                      activeRoute === "Home"
+                        ? styles.tabTextActive
+                        : styles.tabText
+                    }
+                  >
+                    Home
+                  </Text>
+
+                </TouchableOpacity>
+
+                {/* TAMBAH */}
+                <TouchableOpacity
+                  onPress={() =>
+                    navigationRef.navigate(
+                      "Tambah"
+                    )
+                  }
+
+                  style={
+                    activeRoute === "Tambah"
+                      ? styles.tabActive
+                      : styles.tabItem
+                  }
+                >
+
+                  <Plus
+                    size={20}
+                    color={
+                      activeRoute === "Tambah"
+                        ? "#fff"
+                        : "#999"
+                    }
+                  />
+
+                  <Text
+                    style={
+                      activeRoute === "Tambah"
+                        ? styles.tabTextActive
+                        : styles.tabText
+                    }
+                  >
+                    Tambah
+                  </Text>
+
+                </TouchableOpacity>
+
+                {/* FAVORIT */}
+                <TouchableOpacity
+                  onPress={() =>
+                    navigationRef.navigate(
+                      "Favorit"
+                    )
+                  }
+
+                  style={
+                    activeRoute === "Favorit"
+                      ? styles.tabActive
+                      : styles.tabItem
+                  }
+                >
+
+                  <Star
+                    size={20}
+                    color={
+                      activeRoute === "Favorit"
+                        ? "#fff"
+                        : "#999"
+                    }
+                  />
+
+                  <Text
+                    style={
+                      activeRoute === "Favorit"
+                        ? styles.tabTextActive
+                        : styles.tabText
+                    }
+                  >
+                    Favorit
+                  </Text>
+
+                </TouchableOpacity>
+
+              </View>
+
+            )}
+
+          </KeyboardAvoidingView>
+
+        </NavigationContainer>
+
+      </SafeAreaView>
+
+    </ActionSheetProvider>
   );
 }
 
@@ -122,13 +314,31 @@ export default function App() {
 // STYLE
 const styles = StyleSheet.create({
 
+  container: {
+    flex: 1,
+    backgroundColor: "#fff"
+  },
+
   header: {
     paddingHorizontal: 20,
-    paddingTop: 15,
-    paddingBottom: 10,
+    paddingTop:
+      Platform.OS === "android"
+        ? 10
+        : 0,
+
+    paddingBottom: 12,
+
     flexDirection: "row",
+
     justifyContent: "space-between",
-    alignItems: "center"
+
+    alignItems: "center",
+
+    backgroundColor: "#fff",
+
+    borderBottomWidth: 1,
+
+    borderBottomColor: "#eee"
   },
 
   title: {

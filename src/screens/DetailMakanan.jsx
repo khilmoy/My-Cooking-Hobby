@@ -20,7 +20,7 @@ import {
 
 import { useRoute } from "@react-navigation/native";
 import { useRef } from "react";
-import axios from "axios";
+import { supabase } from "../libs/supabase";
 
 export default function DetailMakanan({
   navigation,
@@ -59,7 +59,7 @@ export default function DetailMakanan({
     }
   };
 
-  // DELETE API
+  // DELETE SUPABASE
   const handleDelete = async () => {
 
     try {
@@ -72,15 +72,17 @@ export default function DetailMakanan({
         return;
       }
 
-      await axios.delete(
-        `https://6a09c79ce7e3f433d4836e58.mockapi.io/Recipes/${String(id)}`
-      );
+      const { error } = await supabase
+        .from("recipes")
+        .delete()
+        .eq("id", id);
+
+      if (error) throw error;
 
       navigation.goBack();
 
     } catch (error) {
 
-      console.log(error.response?.data);
       console.log(error.message);
     }
   };
@@ -171,6 +173,7 @@ export default function DetailMakanan({
               <Text style={styles.chipText}>
                 Favorit
               </Text>
+
             </TouchableOpacity>
 
           </View>

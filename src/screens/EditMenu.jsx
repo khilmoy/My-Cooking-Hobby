@@ -4,7 +4,7 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
- Image,
+  Image,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -16,7 +16,7 @@ import { useState } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import * as ImagePicker from "expo-image-picker";
 import { ImagePlus, Calendar } from "lucide-react-native";
-import axios from "axios";
+import { supabase } from "../libs/supabase";
 
 export default function EditMenu({
   navigation,
@@ -92,16 +92,16 @@ export default function EditMenu({
     }
   };
 
-  // PUT API
+  // UPDATE SUPABASE
   const handleUpdate = async () => {
 
     setLoading(true);
 
     try {
 
-      await axios.put(
-        `https://6a09c79ce7e3f433d4836e58.mockapi.io/Recipes/${data.id}`,
-        {
+      const { error } = await supabase
+        .from("recipes")
+        .update({
           name: nama,
 
           image: gambar?.startsWith("http")
@@ -122,8 +122,10 @@ export default function EditMenu({
           recipe: resep,
 
           favorite: false
-        }
-      );
+        })
+        .eq("id", data.id);
+
+      if (error) throw error;
 
       setLoading(false);
 
@@ -131,7 +133,7 @@ export default function EditMenu({
 
     } catch (error) {
 
-      console.log(error);
+      console.log(error.message);
 
       setLoading(false);
     }

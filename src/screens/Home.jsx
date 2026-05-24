@@ -35,7 +35,6 @@ export default function Home({
     extrapolate: "clamp",
   });
 
-  // FONT BELUM SIAP
   if (!loaded) return null;
 
   return (
